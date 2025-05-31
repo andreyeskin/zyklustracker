@@ -81,6 +81,16 @@ public interface WohlbefindenDao {
     StimmungAnzahl getHaeufigsteStimmung();
 
     /**
+     * Häufigsten Schmerzlevel ermitteln
+     * Возвращает уровень боли и количество раз
+     */
+    @Query("SELECT schmerzLevel as stimmung, COUNT(*) as anzahl FROM wohlbefinden_eintraege " +
+            "WHERE schmerzLevel IS NOT NULL AND schmerzLevel != '' " +
+            "GROUP BY schmerzLevel ORDER BY anzahl DESC LIMIT 1")
+    StimmungAnzahl getHaeufigstesSchmerzLevel();
+
+
+    /**
      * Получить все записанные симптомы
      * Возвращает JSON строки, которые нужно будет распарсить
      */

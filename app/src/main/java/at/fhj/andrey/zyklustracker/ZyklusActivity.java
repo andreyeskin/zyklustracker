@@ -42,6 +42,16 @@ import java.util.Set;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 
+// Sensor-Integration
+import at.fhj.andrey.zyklustracker.sensors.ZyklusSensorManager;
+import at.fhj.andrey.zyklustracker.sensors.SensorData;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.core.content.ContextCompat;
+import android.content.pm.PackageManager;
+import android.widget.Toast;
+import android.util.Log;
+
 /**
  * ZyklusActivity - Hauptaktivität für die Zyklusanzeige und -verwaltung
  *
@@ -69,7 +79,10 @@ import kotlin.jvm.functions.Function1;
  * @version 1.0
  * @since Mai 2025
  */
-public class ZyklusActivity extends AppCompatActivity {
+public class ZyklusActivity extends AppCompatActivity
+        implements ZyklusSensorManager.SensorCallback,
+        ZyklusSensorManager.HealthConnectPermissionRequester
+{
 
     // Datenbankzugriff
     private ZyklusDatenbank database;
@@ -89,6 +102,14 @@ public class ZyklusActivity extends AppCompatActivity {
 
     // Aktuell ausgewähltes Datum im Kalender
     private LocalDate selectedDate = null;
+    // Sensor-Management
+    private ZyklusSensorManager sensorManager;
+    private TextView temperatureValueText;
+    private TextView pulseValueText;
+    private TextView spo2ValueText;
+
+    // Berechtigungen verwalten
+    private ActivityResultLauncher<String[]> permissionLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,6 +136,13 @@ public class ZyklusActivity extends AppCompatActivity {
 
         // Floating Action Button für Periodeneingabe konfigurieren
         setupPeriodInputButton();
+
+        // Sensor-Integration initialisieren
+        initializeSensors();
+        setupPermissionLauncher();
+        fordereBerechtigungenAn();
+        starteSensorMessung();
+
     }
 
     /**
@@ -125,6 +153,10 @@ public class ZyklusActivity extends AppCompatActivity {
         previousMonthButton = findViewById(R.id.btn_month_previous);
         nextMonthButton = findViewById(R.id.btn_month_next);
         calendarView = findViewById(R.id.calendar_view);
+        // Sensor-UI-Komponenten initialisieren
+        temperatureValueText = findViewById(R.id.text_temperature_value);
+        pulseValueText = findViewById(R.id.text_pulse_value);
+        spo2ValueText = findViewById(R.id.text_spo2_value);
     }
 
     /**
@@ -133,6 +165,115 @@ public class ZyklusActivity extends AppCompatActivity {
     private void initializeDatabase() {
         database = ZyklusDatenbank.getInstanz(this);
         periodDao = database.periodeDao();
+    }
+    /**
+     * Initialisiert den Sensor-Manager für Gesundheitsdaten
+     */
+    private void initializeSensors() {
+        sensorManager = new ZyklusSensorManager(this);
+        // Используем this как callback (ZyklusActivity реализует нужные интерфейсы)
+        sensorManager.setzeCallback(this);
+    }
+    private void setupPermissionLauncher() {
+        permissionLauncher = registerForActivityResult(
+                new ActivityResultContracts.RequestMultiplePermissions(),
+                result -> {
+                    boolean alleErteilt = true;
+                    for (Boolean erteilt : result.values()) {
+                        if (!erteilt) {
+                            alleErteilt = false;
+                            break;
+                        }
+                    }
+
+                    if (alleErteilt) {
+                        starteSensorMessung();
+                    } else {
+                        zeigeBerechtigungVerweigertDialog();
+                    }
+                }
+        );
+    }
+    /**
+     * Fordert die notwendigen Sensor-Berechtigungen an
+     */
+    /**
+     * Fordert die notwendigen Sensor-Berechtigungen an (включая Health Connect)
+     */
+    private void fordereBerechtigungenAn() {
+        String[] berechtigungen = {
+                android.Manifest.permission.BODY_SENSORS,
+                // Health Connect разрешения добавлены в Manifest, но здесь не нужны
+                // Health Connect использует свой собственный permission system
+        };
+
+        // Прüfen welche Berechtigungen noch fehlen (только базовые)
+        List<String> zuFordernde = new ArrayList<>();
+        for (String berechtigung : berechtigungen) {
+            if (ContextCompat.checkSelfPermission(this, berechtigung)
+                    != PackageManager.PERMISSION_GRANTED) {
+                zuFordernde.add(berechtigung);
+            }
+        }
+
+        if (zuFordernde.isEmpty()) {
+            // Alle базовые Berechtigungen bereits vorhanden
+            starteSensorMessung();
+        } else {
+            // Berechtigungen anfordern
+            permissionLauncher.launch(zuFordernde.toArray(new String[0]));
+        }
+    }
+
+    /**
+     * Startet die Sensor-Messungen
+     */
+    /**
+     * Startet die Sensor-Messungen (включая Health Connect)
+     */
+    /**
+     * Startet die Sensor-Messungen (включая Health Connect)
+     */
+    // В ZyklusActivity.java найдите метод starteSensorMessung() (строки примерно 245-265) и замените на:
+
+    /**
+     * Startet die Sensor-Messungen (включая Health Connect)
+     */
+    private void starteSensorMessung() {
+        if (sensorManager != null) {
+            // ZyklusSensorManager.starteMessung() возвращает void, не boolean
+            sensorManager.starteMessung();
+
+            Toast.makeText(this, "Sensor-Messung gestartet", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Health Connect-Integration aktiv",
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * Zeigt Dialog bei verweigerten Berechtigungen
+     */
+    // В ZyklusActivity.java найдите метод zeigeBerechtigungVerweigertDialog() и замените на:
+
+    /**
+     * Zeigt Dialog bei verweigerten Berechtigungen
+     */
+    private void zeigeBerechtigungVerweigertDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("Berechtigungen erforderlich")
+                .setMessage("Für die Health Connect-Funktionen werden spezielle Berechtigungen benötigt. " +
+                        "Sie können diese in Health Connect nachträglich erteilen.")
+                .setPositiveButton("OK", null)
+                .setNegativeButton("Einstellungen", (dialog, which) -> {
+                    // Öffne Health Connect oder App-Einstellungen
+                    try {
+                        Intent intent = new Intent("androidx.health.ACTION_REQUEST_PERMISSIONS");
+                        startActivity(intent);
+                    } catch (Exception e) {
+                        Toast.makeText(this, "Health Connect nicht gefunden", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .show();
     }
 
     /**
@@ -515,7 +656,126 @@ public class ZyklusActivity extends AppCompatActivity {
         String title = monthName + " " + month.getYear();
         monthTitleText.setText(title);
     }
+    /**
+     * Wird aufgerufen wenn die Activity wieder sichtbar wird
+     * Reaktiviert die Sensoren falls Berechtigungen vorhanden
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
 
+        // Sensoren wieder aktivieren wenn Berechtigungen vorhanden
+        if (sensorManager != null) {
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.BODY_SENSORS)
+                    == PackageManager.PERMISSION_GRANTED) {
+                sensorManager.starteMessung();
+            }
+        }
+    }
+
+    /**
+     * Wird aufgerufen wenn die Activity in den Hintergrund geht
+     * Stoppt die Sensoren um Akku zu schonen
+     */
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        // Sensoren pausieren um Akku zu schonen
+       // if (sensorManager != null) {
+        //    sensorManager.stoppeMessung();
+       // }
+    }
+
+    /**
+     * Wird aufgerufen wenn die Activity zerstört wird
+     * Gibt alle Sensor-Ressourcen frei
+     */
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        // Sensor-Ressourcen freigeben
+        if (sensorManager != null) {
+            sensorManager.stoppeMessung();
+        }
+    }
+
+    /**
+     * Реализация HealthConnectPermissionRequester интерфейса
+     * Вызывается ZyklusSensorManager для запроса разрешений Health Connect
+     */
+    // ===== РЕАЛИЗАЦИЯ HEALTHCONNECTPERMISSIONREQUESTER ИНТЕРФЕЙСА =====
+
+    @Override
+    public void requestHealthConnectPermissions(Set<String> permissions) {
+        // Health Connect использует свою систему разрешений
+        try {
+            Intent intent = new Intent("androidx.health.ACTION_REQUEST_PERMISSIONS");
+            startActivity(intent);
+            Toast.makeText(this, "Откройте Health Connect для предоставления разрешений",
+                    Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
+            Toast.makeText(this, "Health Connect не найден. Установите приложение Health Connect",
+                    Toast.LENGTH_LONG).show();
+        }
+    }
+
+    // В ZyklusActivity.java добавьте эти методы в конец класса (перед DayViewContainer):
+
+// ===== РЕАЛИЗАЦИЯ SENSORCALLBACK ИНТЕРФЕЙСА =====
+
+    // Пример того, как это должно выглядеть в ZyklusActivity.java
+    @Override
+    public void datenVerfuegbar(SensorData daten) {
+        runOnUiThread(() -> { // Гарантируем UI-поток, хотя должно быть уже так
+            if (daten != null) {
+                Log.w("ZyklusActivity", "Daten verfügbar: " + daten.toString()); // Логирование
+                if (daten.getBodyTemperature() > 0) {
+                    temperatureValueText.setText(String.format("Temperatur: %.1f°C", daten.getBodyTemperature()));
+                } else {
+                    temperatureValueText.setText("Temperatur: N/A");
+                }
+                if (daten.getHeartRate() > 0) {
+                    pulseValueText.setText(String.format("Puls: %.0f bpm", daten.getHeartRate()));
+                } else {
+                    pulseValueText.setText("Puls: N/A");
+                }
+                if (daten.getOxygenSaturation() > 0) {
+                    spo2ValueText.setText(String.format("SpO₂: %.0f%%", daten.getOxygenSaturation()));
+                } else {
+                    spo2ValueText.setText("SpO₂: N/A");
+                }
+                Toast.makeText(ZyklusActivity.this, "Sensor-Daten aktualisiert!", Toast.LENGTH_SHORT).show(); // Тестовый тост
+            } else {
+                Log.w ("ZyklusActivity", "Daten verfügbar, aber daten объект is null");
+                Toast.makeText(ZyklusActivity.this, "Sensor-Daten (null) erhalten", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    @Override
+    public void keineDatenVerfuegbar(String grund) {
+        runOnUiThread(() -> {
+            // Заменяем androidx.media3.common.util.Log на android.util.Log
+            Log.w("ZyklusActivity", "Keine Daten verfügbar: " + grund);
+            // Возможно, обновить UI, чтобы показать "N/A" для всех полей
+            temperatureValueText.setText("Temperatur: N/A");
+            pulseValueText.setText("Puls: N/A");
+            spo2ValueText.setText("SpO₂: N/A");
+            Toast.makeText(ZyklusActivity.this, "Keine Sensordaten: " + grund, Toast.LENGTH_LONG).show();
+        });
+    }
+
+
+    @Override
+    public void sensorFehler(String fehlermeldung) {
+        runOnUiThread(() -> {
+            // Заменяем androidx.media3.common.util.Log на android.util.Log
+            Log.e("ZyklusActivity", "Sensor Fehler: " + fehlermeldung);
+            Toast.makeText(ZyklusActivity.this, "Sensorfehler: " + fehlermeldung, Toast.LENGTH_LONG).show();
+        });
+    }
     /**
      * ViewContainer-Klasse für die Darstellung einzelner Kalendertage.
      * Enthält Referenzen auf TextView (Tagesnummer) und View (Markierungspunkt).
@@ -523,11 +783,15 @@ public class ZyklusActivity extends AppCompatActivity {
     public static class DayViewContainer extends ViewContainer {
         public final TextView textView;
         public final View dotView;
-
         public DayViewContainer(View view) {
             super(view);
             textView = view.findViewById(R.id.text_calendar_day);
             dotView = view.findViewById(R.id.view_day_marker);
         }
     }
+
+    /**
+     * Konfiguriert den Permission-Launcher für Sensor-Berechtigungen
+     */
+
 }

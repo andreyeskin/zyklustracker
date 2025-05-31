@@ -2,6 +2,23 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- ===== HEALTH CONNECT PERMISSIONS 2025 ===== -->
+    <!-- Herzfrequenz -->
+    <uses-permission android:name="android.permission.health.READ_HEART_RATE"/>
+    <uses-permission android:name="android.permission.health.WRITE_HEART_RATE"/>
+
+    <!-- Sauerstoffsättigung -->
+    <uses-permission android:name="android.permission.health.READ_OXYGEN_SATURATION"/>
+    <uses-permission android:name="android.permission.health.WRITE_OXYGEN_SATURATION"/>
+
+    <!-- Körpertemperatur -->
+    <uses-permission android:name="android.permission.health.READ_BODY_TEMPERATURE"/>
+    <uses-permission android:name="android.permission.health.WRITE_BODY_TEMPERATURE"/>
+
+    <!-- Schritte -->
+    <uses-permission android:name="android.permission.health.READ_STEPS"/>
+    <uses-permission android:name="android.permission.health.WRITE_STEPS"/>
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -12,6 +29,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ZyklusTracker"
         tools:targetApi="31">
+
+        <!-- ===== HAUPTAKTIVITÄTEN ===== -->
         <activity
             android:name=".ZyklusActivity"
             android:exported="true">
@@ -20,13 +39,41 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true" />
 
-        </activity>
         <activity android:name=".WohlbefindenActivity" />
         <activity android:name=".StatistikActivity" />
+
+        <!-- ===== HEALTH CONNECT PERMISSIONS RATIONALE ACTIVITY ===== -->
+        <!-- Für Android 13 und niedriger -->
+        <activity
+            android:name=".PermissionsRationaleActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="androidx.health.ACTION_SHOW_PERMISSIONS_RATIONALE" />
+            </intent-filter>
+        </activity>
+
+        <!-- Für Android 14 und höher -->
+        <activity-alias
+            android:name="ViewPermissionUsageActivity"
+            android:exported="true"
+            android:targetActivity=".PermissionsRationaleActivity"
+            android:permission="android.permission.START_VIEW_PERMISSION_USAGE">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW_PERMISSION_USAGE" />
+                <category android:name="android.intent.category.HEALTH_PERMISSIONS" />
+            </intent-filter>
+        </activity-alias>
     </application>
+
+    <!-- ===== HEALTH CONNECT QUERIES ===== -->
+    <!-- Prüfung ob Health Connect installiert ist -->
+    <queries>
+        <package android:name="com.google.android.apps.healthdata" />
+    </queries>
 
 </manifest>

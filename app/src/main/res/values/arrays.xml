@@ -5,7 +5,6 @@
         <item>Letzte 3 Monate</item>
         <item>Letzte 6 Monate</item>
         <item>Letztes Jahr</item>
-        <item>Gesamtzeitraum</item>
     </string-array>
 
     <!-- Zeitraum-Werte für programmatische Verwendung -->
@@ -13,7 +12,6 @@
         <item>3_months</item>
         <item>6_months</item>
         <item>1_year</item>
-        <item>all_time</item>
     </string-array>
 
     <!-- Blutungsstärke-Optionen -->
