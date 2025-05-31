@@ -1,18 +1,20 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item
-        android:id="@+id/nav_zyklus"
-        android:icon="@android:drawable/ic_menu_today"
-        android:title="Zyklus" />
 
-    <item
-        android:id="@+id/nav_wohlbefinden"
-        android:icon="@android:drawable/ic_menu_info_details"
-        android:title="Wohlbefinden" />
+        <item
+            android:id="@+id/nav_cycle"
+            android:icon="@drawable/ic_nav_zyklus"
+            android:title="Zyklus" />
 
-    <item
-        android:id="@+id/nav_statistik"
-        android:icon="@android:drawable/ic_menu_agenda"
-        android:title="Statistik" />
+        <item
+            android:id="@+id/nav_wellbeing"
+            android:icon="@drawable/ic_nav_wohlbefinden"
+            android:title="Wohlbefinden" />
 
-</menu>
+        <item
+            android:id="@+id/nav_statistics"
+            android:icon="@drawable/ic_nav_statistik"
+            android:title="Statistik" />
+
+    </menu>
+

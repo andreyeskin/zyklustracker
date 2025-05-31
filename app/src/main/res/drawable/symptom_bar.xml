@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Layout für einen einzelnen Symptom-Balken
+    Zeigt Symptomname links, Anzahl rechts und Fortschrittsbalken unten
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingVertical="12dp"
+    android:paddingHorizontal="4dp">
+
+    <!-- Zeile mit Symptomname und Anzahl -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="8dp">
+
+        <!-- Symptomname (linksbündig) -->
+        <TextView
+            android:id="@+id/text_symptom_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Rückenschmerzen"
+            android:textSize="16sp"
+            android:textColor="#333333" />
+
+        <!-- Anzahl (rechtsbündig) -->
+        <TextView
+            android:id="@+id/text_symptom_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2x"
+            android:textSize="16sp"
+            android:textColor="#666666"
+            android:layout_marginStart="16dp" />
+    </LinearLayout>
+
+    <!-- Fortschrittsbalken (Hintergrund + aktiver Balken) -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="6dp"
+        android:background="@drawable/symptom_bar_background_gray">
+
+        <!-- Aktiver Fortschrittsbalken -->
+        <View
+            android:id="@+id/view_symptom_progress_bar"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/symptom_bar_progress_blue" />
+    </FrameLayout>
+</LinearLayout>

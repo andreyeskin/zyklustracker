@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Zeitraum-Optionen für Statistik-Filter -->
+    <string-array name="zeitraum_optionen">
+        <item>Letzte 3 Monate</item>
+        <item>Letzte 6 Monate</item>
+        <item>Letztes Jahr</item>
+        <item>Gesamtzeitraum</item>
+    </string-array>
+
+    <!-- Zeitraum-Werte für programmatische Verwendung -->
+    <string-array name="timeframe_values">
+        <item>3_months</item>
+        <item>6_months</item>
+        <item>1_year</item>
+        <item>all_time</item>
+    </string-array>
+
+    <!-- Blutungsstärke-Optionen -->
+    <string-array name="bleeding_intensity_options">
+        <item>Sehr leicht</item>
+        <item>Leicht</item>
+        <item>Mittel</item>
+        <item>Stark</item>
+    </string-array>
+
+    <!-- Schmerzlevel-Optionen -->
+    <string-array name="pain_level_options">
+        <item>Keine</item>
+        <item>Leicht</item>
+        <item>Mittel</item>
+        <item>Stark</item>
+        <item>Krampfartig</item>
+    </string-array>
+
+    <!-- Stimmungsoptionen -->
+    <string-array name="mood_options">
+        <item>😀 Sehr gut</item>
+        <item>🙂 Gut</item>
+        <item>😐 Mittel</item>
+        <item>🙁 Schlecht</item>
+    </string-array>
+
+    <!-- Häufige Symptome für Chips -->
+    <string-array name="common_symptoms">
+        <item>Kopfschmerzen</item>
+        <item>Übelkeit</item>
+        <item>Müdigkeit</item>
+        <item>Rückenschmerzen</item>
+        <item>empfindliche Brüste</item>
+        <item>Blähungen</item>
+        <item>Krämpfe</item>
+        <item>Reizbarkeit</item>
+        <item>Schlafstörungen</item>
+        <item>Heißhunger</item>
+    </string-array>
+</resources>

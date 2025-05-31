@@ -1,5 +1,168 @@
 <resources>
+    <!-- ===== APP-GRUNDLAGEN ===== -->
     <string name="app_name">ZyklusTracker</string>
+    <string name="app_description">Intelligente Zyklusbeobachtung mit Sensor-Integration</string>
+
+    <!-- ===== NAVIGATION UND HAUPTBEREICHE ===== -->
+    <string name="nav_cycle">Zyklus</string>
+    <string name="nav_wellbeing">Wohlbefinden</string>
+    <string name="nav_statistics">Statistik</string>
+
+    <!-- ===== KALENDER UND ZYKLUSANSICHT ===== -->
+    <string name="calendar_title">ZyklusTracker</string>
     <string name="month_prev">Vorheriger Monat</string>
     <string name="month_next">Nächster Monat</string>
+
+    <!-- Kalender-Legende -->
+    <string name="legend_period">● Periode</string>
+    <string name="legend_ovulation">Eisprung</string>
+    <string name="legend_fertile">● Fruchtbare Phase</string>
+    <string name="legend_predicted">● Prognose</string>
+
+    <!-- Tagesbericht -->
+    <string name="daily_report_title">Tagesbericht</string>
+    <string name="temperature_label">Temperatur:</string>
+    <string name="pulse_label">Puls:</string>
+    <string name="spo2_label">SpO₂:</string>
+    <string name="temperature_value">+0,2°C</string>
+    <string name="pulse_value">72 bpm</string>
+    <string name="spo2_value">98%</string>
+
+    <!-- Info-Karten -->
+    <string name="info_card_title">Info-Karte</string>
+    <string name="cycle_phase_info">Du befindest dich in der Lutealphase. Temperatur steigt leicht an.</string>
+    <string name="knowledge_title">Wusstest du schon?</string>
+    <string name="knowledge_content">Nach dem Eisprung steigt deine Körpertemperatur um etwa 0,2–0,5 °C. Das hilft bei der natürlichen Zyklusbeobachtung.</string>
+
+    <!-- ===== PERIODENVERWALTUNG ===== -->
+    <string name="btn_manage_period">Periode verwalten</string>
+    <string name="btn_add_period">+ Periode hinzufügen</string>
+    <string name="btn_select_dates">Tage auswählen</string>
+    <string name="btn_dialog_finish">Fertig</string>
+
+    <!-- Dialog-Texte -->
+    <string name="dialog_select_period">Periode auswählen</string>
+    <string name="existing_days_title">Bereits eingetragene Tage:</string>
+    <string name="days_entered_format">%d Tage eingetragen</string>
+
+    <!-- ===== WOHLBEFINDEN-EINGABE ===== -->
+    <string name="wellbeing_title">Wohlbefinden</string>
+    <string name="btn_save">Speichern</string>
+
+    <!-- Menstruationstage -->
+    <string name="menstruation_days_title">Menstruationstage</string>
+    <string name="btn_select_days">Tage auswählen</string>
+
+    <!-- Blutungsstärke -->
+    <string name="bleeding_character_title">Charakter der Blutung</string>
+    <string name="bleeding_very_light">Sehr leicht</string>
+    <string name="bleeding_light">Leicht</string>
+    <string name="bleeding_medium">Mittel</string>
+    <string name="bleeding_heavy">Stark</string>
+
+    <!-- Schmerzlevel -->
+    <string name="pain_title">Schmerzen</string>
+    <string name="pain_none">Keine</string>
+    <string name="pain_light">Leicht</string>
+    <string name="pain_medium">Mittel</string>
+    <string name="pain_heavy">Stark</string>
+    <string name="pain_cramp">Krampfartig</string>
+
+    <!-- Stimmung -->
+    <string name="mood_title">Stimmung</string>
+    <string name="mood_very_good">😀 Sehr gut</string>
+    <string name="mood_good">🙂 Gut</string>
+    <string name="mood_medium">😐 Mittel</string>
+    <string name="mood_bad">🙁 Schlecht</string>
+
+    <!-- Begleitsymptome -->
+    <string name="symptoms_title">Begleitsymptome</string>
+    <string name="symptom_headache">Kopfschmerzen</string>
+    <string name="symptom_nausea">Übelkeit</string>
+    <string name="symptom_fatigue">Müdigkeit</string>
+    <string name="symptom_back_pain">Rückenschmerzen</string>
+    <string name="symptom_breast_tenderness">empfindliche Brüste</string>
+
+    <!-- Letzte Einträge -->
+    <string name="recent_entries_title">Letzte Einträge</string>
+    <string name="no_entries">Keine Einträge vorhanden</string>
+
+    <!-- Wissenskarte -->
+    <string name="info_knowledge_title">Wusstest du schon?</string>
+    <string name="info_knowledge_content">Deine Symptome können dir Hinweise auf hormonelle Veränderungen geben. Durch regelmäßiges Eintragen erkennst du Muster, die dir helfen, deinen Zyklus besser zu verstehen.</string>
+    <string name="btn_show_more">Mehr anzeigen</string>
+
+    <!-- ===== STATISTIKEN ===== -->
+    <string name="statistics_title">Statistik</string>
+
+    <!-- Übersichtskarten -->
+    <string name="cycle_length_title">Zykluslänge</string>
+    <string name="period_duration_title">Periode</string>
+    <string name="period_duration_avg">Tage Ø</string>
+    <string name="pain_stats_title">Schmerz</string>
+    <string name="mood_stats_title">Stimmung</string>
+
+    <!-- Diagramme und Auswertungen -->
+    <string name="cycle_length_chart_title">Zykluslänge in Tagen</string>
+    <string name="most_frequent_symptoms">Häufigste Symptome</string>
+    <string name="mood_distribution">Stimmungsverlauf</string>
+
+    <!-- Zeitraum-Filter -->
+    <string name="timeframe_last_3_months">Letzte 3 Monate</string>
+    <string name="timeframe_last_6_months">Letzte 6 Monate</string>
+    <string name="timeframe_last_year">Letztes Jahr</string>
+    <string name="timeframe_all_time">Gesamtzeitraum</string>
+
+    <!-- ===== TOAST-NACHRICHTEN UND FEEDBACK ===== -->
+    <string name="data_saved">Daten gespeichert!</string>
+    <string name="data_updated">Daten aktualisiert!</string>
+    <string name="save_error">Fehler beim Speichern: %s</string>
+    <string name="loading">Lade Daten…</string>
+
+    <!-- ===== STATISTISCHE AUSWERTUNGEN ===== -->
+    <string name="not_enough_data">Noch nicht genug Daten</string>
+    <string name="no_cycle_data">Noch nicht genug Daten für Zyklusberechnung</string>
+    <string name="no_mood_data">Noch keine Stimmungsdaten</string>
+    <string name="no_symptom_data">Noch keine Symptomdaten</string>
+    <string name="no_symptoms_recorded">Keine Symptome erfasst</string>
+
+    <!-- Prozentangaben -->
+    <string name="percentage_of_days">%d%% der Tage</string>
+    <string name="times_recorded">%dx</string>
+    <string name="days_range">%d–%d Tage</string>
+    <string name="average_days">Ø %d Tage</string>
+
+    <!-- ===== FEHLERMELDUNGEN UND VALIDIERUNG ===== -->
+    <string name="error_general">Ein Fehler ist aufgetreten</string>
+    <string name="error_database">Datenbankfehler</string>
+    <string name="error_invalid_date">Ungültiges Datum</string>
+    <string name="error_date_in_future">Datum liegt zu weit in der Zukunft</string>
+
+    <!-- ===== ZUGÄNGLICHKEIT (ACCESSIBILITY) ===== -->
+    <string name="content_desc_settings">Einstellungen</string>
+    <string name="content_desc_temperature">Temperatur-Icon</string>
+    <string name="content_desc_pulse">Puls-Icon</string>
+    <string name="content_desc_oxygen">Sauerstoff-Icon</string>
+    <string name="content_desc_info">Info-Icon</string>
+    <string name="content_desc_knowledge">Wissens-Icon</string>
+    <string name="content_desc_ovulation">Eisprung-Markierung</string>
+    <string name="content_desc_delete">Löschen</string>
+
+    <!-- ===== ZUKÜNFTIGE FUNKTIONEN ===== -->
+    <!-- Sensor-Integration -->
+    <string name="sensor_connection">Sensor-Verbindung</string>
+    <string name="amazfit_pairing">Amazfit Band 5 koppeln</string>
+    <string name="sensor_data_sync">Daten synchronisieren</string>
+
+    <!-- Einstellungen -->
+    <string name="settings_title">Einstellungen</string>
+    <string name="privacy_settings">Datenschutz</string>
+    <string name="notification_settings">Benachrichtigungen</string>
+    <string name="backup_settings">Datensicherung</string>
+
+    <!-- Exportfunktionen -->
+    <string name="export_data">Daten exportieren</string>
+    <string name="export_pdf">PDF-Bericht erstellen</string>
+    <string name="share_data">Daten teilen</string>
+
 </resources>

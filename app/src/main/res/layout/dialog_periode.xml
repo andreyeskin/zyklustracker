@@ -1,12 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    Dialog-Layout für die Periodenverwaltung
+
+    Funktionalitäten:
+    - Button zum Hinzufügen neuer Periodentage
+    - Scrollbare Liste der bereits eingetragenen Tage
+    - Löschfunktion für einzelne Tage
+    - "Fertig"-Button zum Schließen des Dialogs
+
+    Verwendung:
+    - Wird von ZyklusActivity über AlertDialog.Builder geöffnet
+    - Material DatePicker wird für Datumsauswahl verwendet
+    - Dynamische Erstellung der Tagesliste im Java-Code
+-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="20dp">
 
+    <!-- Button zum Hinzufügen neuer Periodentage -->
     <Button
-        android:id="@+id/btnSelectNewDates"
+        android:id="@+id/btn_select_new_dates"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="+ Periode hinzufügen"
@@ -15,7 +30,9 @@
         android:textColor="@android:color/white"
         android:layout_marginBottom="12dp" />
 
+    <!-- Überschrift für bereits eingetragene Tage -->
     <TextView
+        android:id="@+id/text_existing_days_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Bereits eingetragene Tage:"
@@ -23,19 +40,24 @@
         android:layout_marginBottom="8dp"
         android:textSize="16sp"/>
 
-
+    <!-- Scrollbare Liste für bestehende Perioden-Einträge -->
     <ScrollView
+        android:id="@+id/scroll_existing_dates"
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:fillViewport="true">
+
+        <!-- Container für dynamisch erstellte Datumszeilen -->
         <LinearLayout
-            android:id="@+id/layoutOldDates"
+            android:id="@+id/layout_old_dates"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </ScrollView>
+
+    <!-- Fertig-Button zum Schließen des Dialogs -->
     <Button
-        android:id="@+id/btnDialogFertig"
+        android:id="@+id/btn_dialog_finish"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Fertig"
