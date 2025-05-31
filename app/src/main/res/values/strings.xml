@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">ZyklusTracker</string>
+    <string name="month_prev">Vorheriger Monat</string>
+    <string name="month_next">Nächster Monat</string>
+</resources>

@@ -1,0 +1,463 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/mainLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".WohlbefindenActivity">
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+        <!-- Titel -->
+        <TextView
+            android:id="@+id/btnSpeichern"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Speichern"
+            android:textStyle="bold"
+            android:textColor="?attr/colorPrimary"
+            android:layout_gravity="end"
+            android:padding="8dp"
+            android:textSize="16sp" />
+        <TextView
+            android:id="@+id/textWohlbefinden"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Wohlbefinden"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:paddingBottom="16dp" />
+
+        <!-- Card: Menstruationstage -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardElevation="4dp"
+            app:cardCornerRadius="12dp">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:id="@+id/textMenstruationstage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:text="Menstruationstage"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/btnTageAuswaehlen"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tage auswählen" />
+
+                <TextView
+                    android:id="@+id/txtTageEingetragen"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="3 Tage eingetragen" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+        <!-- Card: Charakter der Blutung -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardElevation="4dp"
+                app:cardCornerRadius="12dp">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/textCharakter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Charakter der Blutung"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="8dp" />
+
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:id="@+id/flexboxBlutung"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:flexWrap="wrap"
+                        app:justifyContent="flex_start"
+                        android:layout_marginTop="8dp">
+
+                        <RadioButton
+                            android:id="@+id/rbSehrLeicht"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Sehr leicht" />
+
+                        <RadioButton
+                            android:id="@+id/rbLeicht"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Leicht" />
+
+                        <RadioButton
+                            android:id="@+id/rbMittel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Mittel" />
+
+                        <RadioButton
+                            android:id="@+id/rbStark"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Stark" />
+                    </com.google.android.flexbox.FlexboxLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+        <!-- Card: Schmerzen -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardElevation="4dp"
+            app:cardCornerRadius="12dp">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:ignore="MissingClass">
+
+                <TextView
+                    android:id="@+id/textSchmerzen"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Schmerzen"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp" />
+
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/flexboxSchmerzen"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:flexWrap="wrap"
+                    app:justifyContent="flex_start"
+                    android:layout_marginTop="8dp">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnKeine"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Keine"
+                        android:textColor="@android:color/black"
+                        android:backgroundTint="@android:color/white"
+                        app:cornerRadius="40dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="8dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnLeicht"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Leicht"
+                        android:textColor="@android:color/black"
+                        android:backgroundTint="@android:color/white"
+                        app:cornerRadius="40dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="8dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnMittel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Mittel"
+                        android:textColor="@android:color/black"
+                        android:backgroundTint="@android:color/white"
+                        app:cornerRadius="40dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="8dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnStark"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Stark"
+                        android:textColor="@android:color/black"
+                        android:backgroundTint="@android:color/white"
+                        app:cornerRadius="40dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="8dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnKrampfartig"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Krampfartig"
+                        android:textColor="@android:color/black"
+                        android:backgroundTint="@android:color/white"
+                        app:cornerRadius="40dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="8dp" />
+                </com.google.android.flexbox.FlexboxLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Card: Stimmung-->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardElevation="4dp"
+            app:cardCornerRadius="12dp">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/textStimmung"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Stimmung"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp" />
+
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/flexboxStimmung"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:flexWrap="wrap"
+                    app:justifyContent="space_between">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnSehrGut"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="😀 Sehr gut"
+                        android:textColor="@android:color/black"
+                        android:backgroundTint="@android:color/white"
+                        app:cornerRadius="40dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="8dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnGut"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🙂 Gut"
+                        android:textColor="@android:color/black"
+                        android:backgroundTint="@android:color/white"
+                        app:cornerRadius="40dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="8dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnMittelStimmung"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="😐 Mittel"
+                        android:textColor="@android:color/black"
+                        android:backgroundTint="@android:color/white"
+                        app:cornerRadius="40dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="8dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnSchlecht"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🙁 Schlecht"
+                        android:textColor="@android:color/black"
+                        android:backgroundTint="@android:color/white"
+                        app:cornerRadius="40dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="8dp" />
+
+                </com.google.android.flexbox.FlexboxLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardElevation="4dp"
+            app:cardCornerRadius="12dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:id="@+id/textBegleitsymptome"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Begleitsymptome"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp" />
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chipGroupSymptome"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:singleSelection="false"
+                    app:chipSpacing="8dp">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipKopf"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Kopfschmerzen"
+                        android:checkable="true" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipÜbelkeit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Übelkeit"
+                        android:checkable="true" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipMüdigkeit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Müdigkeit"
+                        android:checkable="true" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipRücken"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rückenschmerzen"
+                        android:checkable="true" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipBrüste"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="empfindliche Brüste"
+                        android:checkable="true" />
+
+                </com.google.android.material.chip.ChipGroup>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardElevation="4dp"
+            app:cardCornerRadius="12dp">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/textLetzteEintraege"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Letzte Einträge"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp" />
+
+                <TextView
+                    android:id="@+id/textDummyEintrag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="28.05.2025\nBlutung: Mittel\nSchmerzen: Krampfartig\nStimmung: Gut\nBegleitsymptome: Müdigkeit, empfindliche Brüste"
+                    android:textSize="14sp" />
+
+                <!-- Optional: Button später -->
+                <!-- <TextView android:text="Mehr anzeigen" .../> -->
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp"
+            android:backgroundTint="#FFF6D9">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/textInfoTitel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Wusstest du schon?"
+                    android:textStyle="bold"
+                    android:drawableStart="@android:drawable/ic_dialog_info"
+                    android:drawablePadding="8dp"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/textInfoInhalt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Deine Symptome können dir Hinweise auf hormonelle Veränderungen geben. Durch regelmäßiges Eintragen erkennst du Muster, die dir helfen, deinen Zyklus besser zu verstehen."
+                    android:textSize="14sp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp" />
+
+                <TextView
+                    android:id="@+id/textMehr"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Mehr anzeigen"
+                    android:textColor="#D81B60"
+                    android:textStyle="bold"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+        </LinearLayout>
+    </ScrollView>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        app:menu="@menu/bottom_nav_menu"
+        app:labelVisibilityMode="labeled" />
+</LinearLayout>
+

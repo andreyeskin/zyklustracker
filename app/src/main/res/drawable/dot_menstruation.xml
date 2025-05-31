@@ -1,0 +1,8 @@
+<!-- res/drawable/circle_dot.xml -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <size
+        android:width="8dp"
+        android:height="8dp"/>
+    <solid android:color="#D81B60"/> <!-- цвет точки (можно менять динамически потом) -->
+</shape>
