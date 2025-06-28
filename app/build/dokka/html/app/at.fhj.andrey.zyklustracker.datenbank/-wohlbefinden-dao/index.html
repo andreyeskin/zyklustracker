@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>WohlbefindenDao</title>
+    <link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">
+    <script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async="async"></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer="defer"></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer="defer"></script>
+</head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+                    <a class="library-name--link" href="../../../index.html">
+                            app
+                    </a>
+            </div>
+            <div class="library-version">
+            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":app:dokkaHtml/release">androidJvm</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageIds="app::at.fhj.andrey.zyklustracker.datenbank/WohlbefindenDao///PointingToDeclaration//492899073">
+  <div class="breadcrumbs"><a href="../../../index.html">app</a><span class="delimiter">/</span><a href="../index.html">at.fhj.andrey.zyklustracker.datenbank</a><span class="delimiter">/</span><span class="current">WohlbefindenDao</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Wohlbefinden</span><wbr></wbr><span><span>Dao</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">interface </span><a href="index.html">WohlbefindenDao</a></div><p class="paragraph">DAO für die Arbeit mit Wohlbefinden-Daten Enthält alle Methoden für das Lesen und Schreiben in die Tabelle wohlbefinden_eintraege</p></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="-1640087026%2FFunctions%2F492899073" anchor-label="aktualisierenEintrag" id="-1640087026%2FFunctions%2F492899073" data-filterable-set=":app:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaHtml/release" data-filterable-set=":app:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="aktualisieren-eintrag.html"><span>aktualisieren</span><wbr></wbr><span><span>Eintrag</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1640087026%2FFunctions%2F492899073"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="aktualisieren-eintrag.html"><span class="token function">aktualisierenEintrag</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">eintrag<span class="token operator">: </span><a href="../-wohlbefinden-eintrag/index.html">WohlbefindenEintrag</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Bestehenden Eintrag aktualisieren Wird verwendet wenn Benutzer Daten für einen Tag bearbeitet</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-369315575%2FFunctions%2F492899073" anchor-label="einfuegenEintrag" id="-369315575%2FFunctions%2F492899073" data-filterable-set=":app:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaHtml/release" data-filterable-set=":app:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="einfuegen-eintrag.html"><span>einfuegen</span><wbr></wbr><span><span>Eintrag</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-369315575%2FFunctions%2F492899073"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="einfuegen-eintrag.html"><span class="token function">einfuegenEintrag</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">eintrag<span class="token operator">: </span><a href="../-wohlbefinden-eintrag/index.html">WohlbefindenEintrag</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Neuen Eintrag hinzufügen Wenn bereits ein Eintrag für dieses Datum existiert - Fehler!</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2090799005%2FFunctions%2F492899073" anchor-label="existiertEintrag" id="2090799005%2FFunctions%2F492899073" data-filterable-set=":app:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaHtml/release" data-filterable-set=":app:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="existiert-eintrag.html"><span>existiert</span><wbr></wbr><span><span>Eintrag</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2090799005%2FFunctions%2F492899073"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="existiert-eintrag.html"><span class="token function">existiertEintrag</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">datum<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/java/time/LocalDate.html">LocalDate</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a></div><div class="brief ">Prüfen ob ein Eintrag für ein bestimmtes Datum existiert Gibt die Anzahl der Einträge zurück (0 oder 1)</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="242465706%2FFunctions%2F492899073" anchor-label="getAlleEintraege" id="242465706%2FFunctions%2F492899073" data-filterable-set=":app:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaHtml/release" data-filterable-set=":app:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-alle-eintraege.html"><span>get</span><wbr></wbr><span>Alle</span><wbr></wbr><span><span>Eintraege</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="242465706%2FFunctions%2F492899073"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-alle-eintraege.html"><span class="token function">getAlleEintraege</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/java/util/List.html">List</a><span class="token operator">&lt;</span><a href="../-wohlbefinden-eintrag/index.html">WohlbefindenEintrag</a><span class="token operator">&gt;</span></div><div class="brief ">Alle Wohlbefinden-Einträge abrufen Sortierung: Neueste Einträge zuerst</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1426303104%2FFunctions%2F492899073" anchor-label="getAlleEintraegeMetSensordaten" id="1426303104%2FFunctions%2F492899073" data-filterable-set=":app:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaHtml/release" data-filterable-set=":app:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-alle-eintraege-met-sensordaten.html"><span>get</span><wbr></wbr><span>Alle</span><wbr></wbr><span>Eintraege</span><wbr></wbr><span>Met</span><wbr></wbr><span><span>Sensordaten</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1426303104%2FFunctions%2F492899073"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-alle-eintraege-met-sensordaten.html"><span class="token function">getAlleEintraegeMetSensordaten</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/java/util/List.html">List</a><span class="token operator">&lt;</span><a href="../-wohlbefinden-eintrag/index.html">WohlbefindenEintrag</a><span class="token operator">&gt;</span></div><div class="brief ">Alle Einträge mit Sensordaten abrufen (nicht null Werte)</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1895050685%2FFunctions%2F492899073" anchor-label="getAlleSymptomeListen" id="-1895050685%2FFunctions%2F492899073" data-filterable-set=":app:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaHtml/release" data-filterable-set=":app:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-alle-symptome-listen.html"><span>get</span><wbr></wbr><span>Alle</span><wbr></wbr><span>Symptome</span><wbr></wbr><span><span>Listen</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1895050685%2FFunctions%2F492899073"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-alle-symptome-listen.html"><span class="token function">getAlleSymptomeListen</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/java/util/List.html">List</a><span class="token operator">&lt;</span><a href="https://developer.android.com/reference/kotlin/java/lang/String.html">String</a><span class="token operator">&gt;</span></div><div class="brief ">Alle erfassten Symptome abrufen Gibt JSON-Strings zurück, die geparst werden müssen</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="474930974%2FFunctions%2F492899073" anchor-label="getAnzahlEintraege" id="474930974%2FFunctions%2F492899073" data-filterable-set=":app:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaHtml/release" data-filterable-set=":app:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-anzahl-eintraege.html"><span>get</span><wbr></wbr><span>Anzahl</span><wbr></wbr><span><span>Eintraege</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="474930974%2FFunctions%2F492899073"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-anzahl-eintraege.html"><span class="token function">getAnzahlEintraege</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a></div><div class="brief ">Gesamtanzahl der Einträge abrufen</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1600314700%2FFunctions%2F492899073" anchor-label="getEintraegeZwischen" id="1600314700%2FFunctions%2F492899073" data-filterable-set=":app:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaHtml/release" data-filterable-set=":app:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-eintraege-zwischen.html"><span>get</span><wbr></wbr><span>Eintraege</span><wbr></wbr><span><span>Zwischen</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1600314700%2FFunctions%2F492899073"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-eintraege-zwischen.html"><span class="token function">getEintraegeZwischen</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">startDatum<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/java/time/LocalDate.html">LocalDate</a><span class="token punctuation">, </span></span><span class="parameter ">endDatum<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/java/time/LocalDate.html">LocalDate</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/java/util/List.html">List</a><span class="token operator">&lt;</span><a href="../-wohlbefinden-eintrag/index.html">WohlbefindenEintrag</a><span class="token operator">&gt;</span></div><div class="brief ">Einträge für einen Zeitraum abrufen Zum Beispiel für Monatsstatistiken</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1098837949%2FFunctions%2F492899073" anchor-label="getEintragNachDatum" id="1098837949%2FFunctions%2F492899073" data-filterable-set=":app:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaHtml/release" data-filterable-set=":app:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-eintrag-nach-datum.html"><span>get</span><wbr></wbr><span>Eintrag</span><wbr></wbr><span>Nach</span><wbr></wbr><span><span>Datum</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1098837949%2FFunctions%2F492899073"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-eintrag-nach-datum.html"><span class="token function">getEintragNachDatum</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">datum<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/java/time/LocalDate.html">LocalDate</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-wohlbefinden-eintrag/index.html">WohlbefindenEintrag</a></div><div class="brief ">Eintrag für ein bestimmtes Datum abrufen Gibt null zurück, wenn kein Eintrag vorhanden ist</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2005501734%2FFunctions%2F492899073" anchor-label="getHaeufigstesSchmerzLevel" id="-2005501734%2FFunctions%2F492899073" data-filterable-set=":app:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaHtml/release" data-filterable-set=":app:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-haeufigstes-schmerz-level.html"><span>get</span><wbr></wbr><span>Haeufigstes</span><wbr></wbr><span>Schmerz</span><wbr></wbr><span><span>Level</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2005501734%2FFunctions%2F492899073"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-haeufigstes-schmerz-level.html"><span class="token function">getHaeufigstesSchmerzLevel</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-stimmung-anzahl/index.html">StimmungAnzahl</a></div><div class="brief ">Häufigsten Schmerzlevel ermitteln Gibt Schmerzlevel und Häufigkeit zurück</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-112587269%2FFunctions%2F492899073" anchor-label="getHaeufigsteStimmung" id="-112587269%2FFunctions%2F492899073" data-filterable-set=":app:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaHtml/release" data-filterable-set=":app:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-haeufigste-stimmung.html"><span>get</span><wbr></wbr><span>Haeufigste</span><wbr></wbr><span><span>Stimmung</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-112587269%2FFunctions%2F492899073"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-haeufigste-stimmung.html"><span class="token function">getHaeufigsteStimmung</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-stimmung-anzahl/index.html">StimmungAnzahl</a></div><div class="brief ">Häufigste Stimmung ermitteln Gibt Stimmung und Häufigkeit zurück</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1043217341%2FFunctions%2F492899073" anchor-label="getLetzteEintraege" id="1043217341%2FFunctions%2F492899073" data-filterable-set=":app:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaHtml/release" data-filterable-set=":app:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-letzte-eintraege.html"><span>get</span><wbr></wbr><span>Letzte</span><wbr></wbr><span><span>Eintraege</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1043217341%2FFunctions%2F492899073"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-letzte-eintraege.html"><span class="token function">getLetzteEintraege</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">anzahl<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/java/util/List.html">List</a><span class="token operator">&lt;</span><a href="../-wohlbefinden-eintrag/index.html">WohlbefindenEintrag</a><span class="token operator">&gt;</span></div><div class="brief ">Die letzten N Einträge abrufen Für die Verlaufsanzeige in der App</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="660964226%2FFunctions%2F492899073" anchor-label="getLetztenSensordaten" id="660964226%2FFunctions%2F492899073" data-filterable-set=":app:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaHtml/release" data-filterable-set=":app:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-letzten-sensordaten.html"><span>get</span><wbr></wbr><span>Letzten</span><wbr></wbr><span><span>Sensordaten</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="660964226%2FFunctions%2F492899073"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-letzten-sensordaten.html"><span class="token function">getLetztenSensordaten</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-wohlbefinden-eintrag/index.html">WohlbefindenEintrag</a></div><div class="brief ">Neueste Sensordaten abrufen</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1430091976%2FFunctions%2F492899073" anchor-label="getSensordatenZwischen" id="1430091976%2FFunctions%2F492899073" data-filterable-set=":app:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaHtml/release" data-filterable-set=":app:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-sensordaten-zwischen.html"><span>get</span><wbr></wbr><span>Sensordaten</span><wbr></wbr><span><span>Zwischen</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1430091976%2FFunctions%2F492899073"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-sensordaten-zwischen.html"><span class="token function">getSensordatenZwischen</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">startDatum<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/java/time/LocalDate.html">LocalDate</a><span class="token punctuation">, </span></span><span class="parameter ">endDatum<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/java/time/LocalDate.html">LocalDate</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/java/util/List.html">List</a><span class="token operator">&lt;</span><a href="../-wohlbefinden-eintrag/index.html">WohlbefindenEintrag</a><span class="token operator">&gt;</span></div><div class="brief ">Sensordaten für einen bestimmten Zeitraum abrufen</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1708016460%2FFunctions%2F492899073" anchor-label="loeschenEintragNachDatum" id="1708016460%2FFunctions%2F492899073" data-filterable-set=":app:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaHtml/release" data-filterable-set=":app:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="loeschen-eintrag-nach-datum.html"><span>loeschen</span><wbr></wbr><span>Eintrag</span><wbr></wbr><span>Nach</span><wbr></wbr><span><span>Datum</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1708016460%2FFunctions%2F492899073"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="loeschen-eintrag-nach-datum.html"><span class="token function">loeschenEintragNachDatum</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">datum<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/java/time/LocalDate.html">LocalDate</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Eintrag für ein bestimmtes Datum löschen</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2025 Copyright</span><span
+                class="pull-right"><span>Generated by </span><a
+                href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
