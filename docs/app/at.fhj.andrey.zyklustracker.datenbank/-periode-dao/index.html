@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>PeriodeDao</title>
+    <link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">
+    <script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async="async"></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer="defer"></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer="defer"></script>
+</head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+                    <a class="library-name--link" href="../../../index.html">
+                            app
+                    </a>
+            </div>
+            <div class="library-version">
+            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":app:dokkaHtml/release">androidJvm</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageIds="app::at.fhj.andrey.zyklustracker.datenbank/PeriodeDao///PointingToDeclaration//492899073">
+  <div class="breadcrumbs"><a href="../../../index.html">app</a><span class="delimiter">/</span><a href="../index.html">at.fhj.andrey.zyklustracker.datenbank</a><span class="delimiter">/</span><span class="current">PeriodeDao</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Periode</span><wbr></wbr><span><span>Dao</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">interface </span><a href="index.html">PeriodeDao</a></div><p class="paragraph">DAO = Data Access Object (Datenzugriffsobjekt) Dieses Interface definiert alle Operationen mit der Tabelle periode_eintraege. Room erstellt automatisch die Implementierung dieser Methoden.</p></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="723624430%2FFunctions%2F492899073" anchor-label="aktualisierenPeriode" id="723624430%2FFunctions%2F492899073" data-filterable-set=":app:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaHtml/release" data-filterable-set=":app:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="aktualisieren-periode.html"><span>aktualisieren</span><wbr></wbr><span><span>Periode</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="723624430%2FFunctions%2F492899073"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="aktualisieren-periode.html"><span class="token function">aktualisierenPeriode</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">periode<span class="token operator">: </span><a href="../-periode-eintrag/index.html">PeriodeEintrag</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Einen bestehenden Eintrag aktualisieren.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2025730643%2FFunctions%2F492899073" anchor-label="einfuegenMehrerePerioden" id="2025730643%2FFunctions%2F492899073" data-filterable-set=":app:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaHtml/release" data-filterable-set=":app:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="einfuegen-mehrere-perioden.html"><span>einfuegen</span><wbr></wbr><span>Mehrere</span><wbr></wbr><span><span>Perioden</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2025730643%2FFunctions%2F492899073"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="einfuegen-mehrere-perioden.html"><span class="token function">einfuegenMehrerePerioden</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">perioden<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/java/util/List.html">List</a><span class="token operator">&lt;</span><a href="../-periode-eintrag/index.html">PeriodeEintrag</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief ">Mehrere Periodeneinträge gleichzeitig hinzufügen.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1757086317%2FFunctions%2F492899073" anchor-label="einfuegenPeriode" id="-1757086317%2FFunctions%2F492899073" data-filterable-set=":app:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaHtml/release" data-filterable-set=":app:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="einfuegen-periode.html"><span>einfuegen</span><wbr></wbr><span><span>Periode</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1757086317%2FFunctions%2F492899073"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="einfuegen-periode.html"><span class="token function">einfuegenPeriode</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">periode<span class="token operator">: </span><a href="../-periode-eintrag/index.html">PeriodeEintrag</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Einen neuen Periodeneintrag hinzufügen.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1156080834%2FFunctions%2F492899073" anchor-label="getAlleEchtenPerioden" id="1156080834%2FFunctions%2F492899073" data-filterable-set=":app:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaHtml/release" data-filterable-set=":app:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-alle-echten-perioden.html"><span>get</span><wbr></wbr><span>Alle</span><wbr></wbr><span>Echten</span><wbr></wbr><span><span>Perioden</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1156080834%2FFunctions%2F492899073"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-alle-echten-perioden.html"><span class="token function">getAlleEchtenPerioden</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/java/util/List.html">List</a><span class="token operator">&lt;</span><a href="../-periode-eintrag/index.html">PeriodeEintrag</a><span class="token operator">&gt;</span></div><div class="brief ">Alle echten Perioden (keine Prognosen) abrufen.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1996419189%2FFunctions%2F492899073" anchor-label="getAllePrognostizierten" id="-1996419189%2FFunctions%2F492899073" data-filterable-set=":app:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaHtml/release" data-filterable-set=":app:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-alle-prognostizierten.html"><span>get</span><wbr></wbr><span>Alle</span><wbr></wbr><span><span>Prognostizierten</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1996419189%2FFunctions%2F492899073"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-alle-prognostizierten.html"><span class="token function">getAllePrognostizierten</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/java/util/List.html">List</a><span class="token operator">&lt;</span><a href="../-periode-eintrag/index.html">PeriodeEintrag</a><span class="token operator">&gt;</span></div><div class="brief ">Alle prognostizierten Perioden abrufen.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1264990638%2FFunctions%2F492899073" anchor-label="getPeriodeNachDatum" id="1264990638%2FFunctions%2F492899073" data-filterable-set=":app:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaHtml/release" data-filterable-set=":app:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-periode-nach-datum.html"><span>get</span><wbr></wbr><span>Periode</span><wbr></wbr><span>Nach</span><wbr></wbr><span><span>Datum</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1264990638%2FFunctions%2F492899073"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-periode-nach-datum.html"><span class="token function">getPeriodeNachDatum</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">datum<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/java/time/LocalDate.html">LocalDate</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-periode-eintrag/index.html">PeriodeEintrag</a></div><div class="brief ">Periode anhand eines bestimmten Datums finden.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="877407801%2FFunctions%2F492899073" anchor-label="getPeriodenZwischen" id="877407801%2FFunctions%2F492899073" data-filterable-set=":app:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaHtml/release" data-filterable-set=":app:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-perioden-zwischen.html"><span>get</span><wbr></wbr><span>Perioden</span><wbr></wbr><span><span>Zwischen</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="877407801%2FFunctions%2F492899073"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-perioden-zwischen.html"><span class="token function">getPeriodenZwischen</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">startDatum<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/java/time/LocalDate.html">LocalDate</a><span class="token punctuation">, </span></span><span class="parameter ">endDatum<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/java/time/LocalDate.html">LocalDate</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/java/util/List.html">List</a><span class="token operator">&lt;</span><a href="../-periode-eintrag/index.html">PeriodeEintrag</a><span class="token operator">&gt;</span></div><div class="brief ">Alle Perioden zwischen zwei Daten abrufen.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-576279205%2FFunctions%2F492899073" anchor-label="loeschenAllePrognosen" id="-576279205%2FFunctions%2F492899073" data-filterable-set=":app:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaHtml/release" data-filterable-set=":app:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="loeschen-alle-prognosen.html"><span>loeschen</span><wbr></wbr><span>Alle</span><wbr></wbr><span><span>Prognosen</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-576279205%2FFunctions%2F492899073"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="loeschen-alle-prognosen.html"><span class="token function">loeschenAllePrognosen</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief ">Alle Prognosen löschen (bei Neuberechnung).</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1914501146%2FFunctions%2F492899073" anchor-label="loeschenPeriode" id="-1914501146%2FFunctions%2F492899073" data-filterable-set=":app:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaHtml/release" data-filterable-set=":app:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="loeschen-periode.html"><span>loeschen</span><wbr></wbr><span><span>Periode</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1914501146%2FFunctions%2F492899073"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="loeschen-periode.html"><span class="token function">loeschenPeriode</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">periode<span class="token operator">: </span><a href="../-periode-eintrag/index.html">PeriodeEintrag</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Periode anhand des Datums löschen.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-325726065%2FFunctions%2F492899073" anchor-label="loeschenPeriodeNachDatum" id="-325726065%2FFunctions%2F492899073" data-filterable-set=":app:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaHtml/release" data-filterable-set=":app:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="loeschen-periode-nach-datum.html"><span>loeschen</span><wbr></wbr><span>Periode</span><wbr></wbr><span>Nach</span><wbr></wbr><span><span>Datum</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-325726065%2FFunctions%2F492899073"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="loeschen-periode-nach-datum.html"><span class="token function">loeschenPeriodeNachDatum</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">datum<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/java/time/LocalDate.html">LocalDate</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Periode anhand des Datums löschen.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2025 Copyright</span><span
+                class="pull-right"><span>Generated by </span><a
+                href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
