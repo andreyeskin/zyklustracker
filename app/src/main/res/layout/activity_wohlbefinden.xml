@@ -75,45 +75,6 @@
             android:paddingTop="8dp">
 
             <!-- Card: Menstruationstage -->
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:layout_marginStart="1dp"
-                android:layout_marginEnd="1dp"
-                app:cardElevation="2dp"
-                app:cardCornerRadius="16dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
-
-                    <TextView
-                        android:id="@+id/text_menstruation_days"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:text="Menstruationstage"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-
-                    <Button
-                        android:id="@+id/btn_select_days"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Tage auswählen" />
-
-                    <TextView
-                        android:id="@+id/text_days_entered"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="3 Tage eingetragen" />
-
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
 
             <!-- Card: Charakter der Blutung -->
             <androidx.cardview.widget.CardView
@@ -610,15 +571,27 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <TextView
-                        android:id="@+id/text_info_title"
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Wusstest du schon?"
-                        android:textStyle="bold"
-                        android:drawableStart="@android:drawable/ic_dialog_info"
-                        android:drawablePadding="8dp"
-                        android:textSize="16sp" />
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="8dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/note"
+                            android:contentDescription="Hinweis"
+                            android:layout_marginEnd="8dp" />
+
+                        <TextView
+                            android:id="@+id/text_knowledge_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Wusstest du schon?"
+                            android:textStyle="bold"/>
+                    </LinearLayout>
 
                     <TextView
                         android:id="@+id/text_info_content"

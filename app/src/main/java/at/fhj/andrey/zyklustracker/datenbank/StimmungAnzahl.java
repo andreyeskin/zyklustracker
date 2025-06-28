@@ -1,17 +1,17 @@
 package at.fhj.andrey.zyklustracker.datenbank;
 
 /**
- * Вспомогательный класс для хранения результатов статистики настроения
- * Room использует этот класс для возврата результатов SQL запроса
+ * Hilfsklasse zur Speicherung der Ergebnisse der Stimmungsstatistik.
+ * Room verwendet diese Klasse, um die Ergebnisse einer SQL-Abfrage zurückzugeben.
  */
 public class StimmungAnzahl {
-    public String stimmung;  // Настроение (например: "Gut")
-    public int anzahl;       // Количество раз
+    public String stimmung;
+    public int anzahl;
 
-    // Конструктор по умолчанию
+
     public StimmungAnzahl() {}
 
-    // Геттеры для удобства использования
+
     public String getStimmung() {
         return stimmung;
     }

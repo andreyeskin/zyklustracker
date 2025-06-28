@@ -1,3 +1,10 @@
+/**
+ * SCHRITT 1: Korrigieren Sie WohlbefindenDao.java
+ * ===============================================
+ *
+ * Das DAO-Interface darf NUR abstrakte Methoden enthalten!
+ */
+
 package at.fhj.andrey.zyklustracker.datenbank;
 
 import androidx.room.Dao;
@@ -8,72 +15,74 @@ import java.time.LocalDate;
 import java.util.List;
 
 /**
- * DAO для работы с данными о самочувствии
- * Содержит все методы для чтения и записи в таблицу wohlbefinden_eintraege
+ * DAO für die Arbeit mit Wohlbefinden-Daten
+ * Enthält alle Methoden für das Lesen und Schreiben in die Tabelle wohlbefinden_eintraege
  */
 @Dao
 public interface WohlbefindenDao {
 
     /**
-     * Получить все записи о самочувствии
-     * Сортировка: новые записи сверху
+     * Alle Wohlbefinden-Einträge abrufen
+     * Sortierung: Neueste Einträge zuerst
      */
     @Query("SELECT * FROM wohlbefinden_eintraege ORDER BY datum DESC")
     List<WohlbefindenEintrag> getAlleEintraege();
 
     /**
-     * Получить запись за конкретную дату
-     * Возвращает null, если записи нет
+     * Eintrag für ein bestimmtes Datum abrufen
+     * Gibt null zurück, wenn kein Eintrag vorhanden ist
      */
     @Query("SELECT * FROM wohlbefinden_eintraege WHERE datum = :datum LIMIT 1")
     WohlbefindenEintrag getEintragNachDatum(LocalDate datum);
 
     /**
-     * Получить записи за период времени
-     * Например, для статистики за месяц
+     * Einträge für einen Zeitraum abrufen
+     * Zum Beispiel für Monatsstatistiken
      */
     @Query("SELECT * FROM wohlbefinden_eintraege WHERE datum BETWEEN :startDatum AND :endDatum")
     List<WohlbefindenEintrag> getEintraegeZwischen(LocalDate startDatum, LocalDate endDatum);
 
     /**
-     * Добавить новую запись
-     * Если запись с такой датой уже есть - будет ошибка!
+     * Neuen Eintrag hinzufügen
+     * Wenn bereits ein Eintrag für dieses Datum existiert - Fehler!
      */
     @Insert
     void einfuegenEintrag(WohlbefindenEintrag eintrag);
 
     /**
-     * Обновить существующую запись
-     * Используется когда пользователь редактирует данные за день
+     * Bestehenden Eintrag aktualisieren
+     * Wird verwendet wenn Benutzer Daten für einen Tag bearbeitet
      */
     @Update
     void aktualisierenEintrag(WohlbefindenEintrag eintrag);
 
+
+
     /**
-     * Удалить запись за конкретную дату
+     * Eintrag für ein bestimmtes Datum löschen
      */
     @Query("DELETE FROM wohlbefinden_eintraege WHERE datum = :datum")
     void loeschenEintragNachDatum(LocalDate datum);
 
     /**
-     * Получить последние N записей
-     * Для отображения истории в приложении
+     * Die letzten N Einträge abrufen
+     * Für die Verlaufsanzeige in der App
      */
     @Query("SELECT * FROM wohlbefinden_eintraege ORDER BY datum DESC LIMIT :anzahl")
     List<WohlbefindenEintrag> getLetzteEintraege(int anzahl);
 
     /**
-     * Проверить, есть ли запись за конкретную дату
-     * Возвращает количество записей (0 или 1)
+     * Prüfen ob ein Eintrag für ein bestimmtes Datum existiert
+     * Gibt die Anzahl der Einträge zurück (0 oder 1)
      */
     @Query("SELECT COUNT(*) FROM wohlbefinden_eintraege WHERE datum = :datum")
     int existiertEintrag(LocalDate datum);
 
-    // ===== МЕТОДЫ ДЛЯ СТАТИСТИКИ =====
+    // ===== METHODEN FÜR STATISTIKEN =====
 
     /**
-     * Получить самое частое настроение
-     * Возвращает настроение и количество раз
+     * Häufigste Stimmung ermitteln
+     * Gibt Stimmung und Häufigkeit zurück
      */
     @Query("SELECT stimmung, COUNT(*) as anzahl FROM wohlbefinden_eintraege " +
             "WHERE stimmung IS NOT NULL AND stimmung != '' " +
@@ -82,24 +91,50 @@ public interface WohlbefindenDao {
 
     /**
      * Häufigsten Schmerzlevel ermitteln
-     * Возвращает уровень боли и количество раз
+     * Gibt Schmerzlevel und Häufigkeit zurück
      */
     @Query("SELECT schmerzLevel as stimmung, COUNT(*) as anzahl FROM wohlbefinden_eintraege " +
             "WHERE schmerzLevel IS NOT NULL AND schmerzLevel != '' " +
             "GROUP BY schmerzLevel ORDER BY anzahl DESC LIMIT 1")
     StimmungAnzahl getHaeufigstesSchmerzLevel();
 
-
     /**
-     * Получить все записанные симптомы
-     * Возвращает JSON строки, которые нужно будет распарсить
+     * Alle erfassten Symptome abrufen
+     * Gibt JSON-Strings zurück, die geparst werden müssen
      */
     @Query("SELECT symptome FROM wohlbefinden_eintraege WHERE symptome IS NOT NULL")
     List<String> getAlleSymptomeListen();
 
     /**
-     * Получить количество записей всего
+     * Gesamtanzahl der Einträge abrufen
      */
     @Query("SELECT COUNT(*) FROM wohlbefinden_eintraege")
     int getAnzahlEintraege();
+
+    // ===== METHODEN FÜR SENSORDATEN =====
+
+    /**
+     * Alle Einträge mit Sensordaten abrufen (nicht null Werte)
+     */
+    @Query("SELECT * FROM wohlbefinden_eintraege " +
+            "WHERE temperatur IS NOT NULL OR puls IS NOT NULL OR spo2 IS NOT NULL " +
+            "ORDER BY datum DESC")
+    List<WohlbefindenEintrag> getAlleEintraegeMetSensordaten();
+
+    /**
+     * Sensordaten für einen bestimmten Zeitraum abrufen
+     */
+    @Query("SELECT * FROM wohlbefinden_eintraege " +
+            "WHERE datum BETWEEN :startDatum AND :endDatum " +
+            "AND (temperatur IS NOT NULL OR puls IS NOT NULL OR spo2 IS NOT NULL) " +
+            "ORDER BY datum ASC")
+    List<WohlbefindenEintrag> getSensordatenZwischen(LocalDate startDatum, LocalDate endDatum);
+
+    /**
+     * Neueste Sensordaten abrufen
+     */
+    @Query("SELECT * FROM wohlbefinden_eintraege " +
+            "WHERE temperatur IS NOT NULL OR puls IS NOT NULL OR spo2 IS NOT NULL " +
+            "ORDER BY datum DESC LIMIT 1")
+    WohlbefindenEintrag getLetztenSensordaten();
 }

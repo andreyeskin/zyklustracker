@@ -5,29 +5,21 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.chip.Chip;
 
 import java.util.ArrayList;
 import java.util.List;
 import at.fhj.andrey.zyklustracker.datenbank.*;
+
 import java.time.LocalDate;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 /**
  * WohlbefindenActivity - Aktivität für die Eingabe von Wohlbefindensdaten
@@ -197,46 +189,73 @@ public class WohlbefindenActivity extends AppCompatActivity {
         setupSymptomButtons();
     }
 
-
     /**
      * Konfiguriert den Speichern-Button mit Datensammlung und Datenbankoperationen.
-     */
-    /**
-     * Konfiguriert den Speichern-Button mit Datensammlung und Datenbankoperationen.
+     * WICHTIG: Alle Datenbankzugriffe laufen in Background Threads.
      */
     private void setupSaveButton() {
         TextView saveButton = findViewById(R.id.btn_save);
 
         saveButton.setOnClickListener(v -> {
-            // Prüfen, ob bereits ein Eintrag für heute existiert
-            WohlbefindenEintrag existingEntry = wellbeingDao.getEintragNachDatum(currentDate);
-
-            // Neuen Eintrag erstellen oder bestehenden verwenden
-            WohlbefindenEintrag entry;
-            if (existingEntry != null) {
-                entry = existingEntry;
-            } else {
-                entry = new WohlbefindenEintrag(currentDate);
-            }
-
-            // Blutungsstärke sammeln
+            // Alle UI-Daten sofort sammeln (auf Main Thread)
             String bleeding = collectBleedingData();
-            entry.setBlutungsstaerke(bleeding);
-
-            // Schmerzlevel sammeln
             String pain = selectedPainButton != null ? selectedPainButton.getText().toString() : "";
-            entry.setSchmerzLevel(pain);
-
-            // Stimmung sammeln
             String mood = selectedMoodButton != null ? selectedMoodButton.getText().toString() : "";
-            entry.setStimmung(mood);
-
-            // Symptome sammeln
             List<String> symptoms = collectSymptoms();
-            entry.setSymptome(symptoms);
 
-            // In Datenbank speichern
-            saveToDatabaseWithFeedback(entry, existingEntry != null);
+            // Background Thread für Datenbankoperationen
+            new Thread(() -> {
+                try {
+                    // Prüfen, ob bereits ein Eintrag für heute existiert (Background Thread)
+                    WohlbefindenEintrag existingEntry = wellbeingDao.getEintragNachDatum(currentDate);
+
+                    // Neuen Eintrag erstellen oder bestehenden verwenden
+                    WohlbefindenEintrag entry;
+                    boolean isUpdate;
+                    if (existingEntry != null) {
+                        entry = existingEntry;
+                        isUpdate = true;
+                    } else {
+                        entry = new WohlbefindenEintrag(currentDate);
+                        isUpdate = false;
+                    }
+
+                    // Gesammelte Daten setzen
+                    entry.setBlutungsstaerke(bleeding);
+                    entry.setSchmerzLevel(pain);
+                    entry.setStimmung(mood);
+                    entry.setSymptome(symptoms);
+
+                    // In Datenbank speichern (bereits im Background Thread)
+                    if (isUpdate) {
+                        wellbeingDao.aktualisierenEintrag(entry);
+                    } else {
+                        wellbeingDao.einfuegenEintrag(entry);
+                    }
+
+                    // UI-Updates auf Main Thread
+                    runOnUiThread(() -> {
+                        if (isUpdate) {
+                            Toast.makeText(WohlbefindenActivity.this,
+                                    "Daten aktualisiert!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(WohlbefindenActivity.this,
+                                    "Daten gespeichert!", Toast.LENGTH_SHORT).show();
+                        }
+
+                        // Anzeige der letzten Einträge aktualisieren
+                        loadAndDisplayLastEntries();
+                    });
+
+                } catch (Exception e) {
+                    // Fehlerbehandlung auf UI Thread
+                    runOnUiThread(() -> {
+                        Toast.makeText(WohlbefindenActivity.this,
+                                "Fehler beim Speichern: " + e.getMessage(),
+                                Toast.LENGTH_LONG).show();
+                    });
+                }
+            }).start();
         });
     }
 
@@ -281,26 +300,45 @@ public class WohlbefindenActivity extends AppCompatActivity {
 
     /**
      * Speichert den Eintrag in die Datenbank und zeigt entsprechendes Feedback.
+     * WICHTIG: Läuft im Background Thread um Main Thread nicht zu blockieren.
+     *
      * @param entry Der zu speichernde Eintrag
      * @param isUpdate true wenn es ein Update ist, false für neuen Eintrag
      */
     private void saveToDatabaseWithFeedback(WohlbefindenEintrag entry, boolean isUpdate) {
-        try {
-            if (isUpdate) {
-                wellbeingDao.aktualisierenEintrag(entry);
-                Toast.makeText(this, "Daten aktualisiert!", Toast.LENGTH_SHORT).show();
-            } else {
-                wellbeingDao.einfuegenEintrag(entry);
-                Toast.makeText(this, "Daten gespeichert!", Toast.LENGTH_SHORT).show();
+        // Background Thread für Datenbankoperationen
+        new Thread(() -> {
+            try {
+                // Datenbankzugriff im Background Thread
+                if (isUpdate) {
+                    wellbeingDao.aktualisierenEintrag(entry);
+                } else {
+                    wellbeingDao.einfuegenEintrag(entry);
+                }
+
+                // UI-Updates auf Main Thread
+                runOnUiThread(() -> {
+                    if (isUpdate) {
+                        Toast.makeText(WohlbefindenActivity.this,
+                                "Daten aktualisiert!", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(WohlbefindenActivity.this,
+                                "Daten gespeichert!", Toast.LENGTH_SHORT).show();
+                    }
+
+                    // Anzeige der letzten Einträge aktualisieren
+                    loadAndDisplayLastEntries();
+                });
+
+            } catch (Exception e) {
+                // Fehlerbehandlung auf UI Thread
+                runOnUiThread(() -> {
+                    Toast.makeText(WohlbefindenActivity.this,
+                            "Fehler beim Speichern: " + e.getMessage(),
+                            Toast.LENGTH_LONG).show();
+                });
             }
-
-            // Anzeige der letzten Einträge aktualisieren
-            loadAndDisplayLastEntries();
-
-        } catch (Exception e) {
-            Toast.makeText(this, "Fehler beim Speichern: " + e.getMessage(),
-                    Toast.LENGTH_LONG).show();
-        }
+        }).start();
     }
 
     /**
@@ -327,24 +365,43 @@ public class WohlbefindenActivity extends AppCompatActivity {
 
     /**
      * Lädt die letzten 5 Einträge aus der Datenbank und aktualisiert die Anzeige.
+     * WICHTIG: Läuft im Background Thread um Main Thread nicht zu blockieren.
      */
     private void loadAndDisplayLastEntries() {
         TextView entriesDisplay = findViewById(R.id.text_recent_entries);
 
-        List<WohlbefindenEintrag> recentEntries = wellbeingDao.getLetzteEintraege(5);
+        // Platzhalter-Text während des Ladens anzeigen
+        entriesDisplay.setText("Lade letzte Einträge...");
 
-        if (recentEntries.isEmpty()) {
-            entriesDisplay.setText("Keine Einträge vorhanden");
-            return;
-        }
+        // Background Thread für Datenbankzugriff
+        new Thread(() -> {
+            try {
+                // Datenbankzugriff im Background Thread
+                List<WohlbefindenEintrag> recentEntries = wellbeingDao.getLetzteEintraege(5);
 
-        // StringBuilder für formatierte Ausgabe
-        StringBuilder displayText = new StringBuilder();
-        for (WohlbefindenEintrag entry : recentEntries) {
-            appendEntryToDisplay(displayText, entry);
-        }
+                // Zurück zum UI Thread für Anzeige-Updates
+                runOnUiThread(() -> {
+                    if (recentEntries.isEmpty()) {
+                        entriesDisplay.setText("Keine Einträge vorhanden");
+                        return;
+                    }
 
-        entriesDisplay.setText(displayText.toString());
+                    // StringBuilder für formatierte Ausgabe
+                    StringBuilder displayText = new StringBuilder();
+                    for (WohlbefindenEintrag entry : recentEntries) {
+                        appendEntryToDisplay(displayText, entry);
+                    }
+
+                    entriesDisplay.setText(displayText.toString());
+                });
+
+            } catch (Exception e) {
+                // Fehlerbehandlung auf UI Thread
+                runOnUiThread(() -> {
+                    entriesDisplay.setText("Fehler beim Laden der Einträge: " + e.getMessage());
+                });
+            }
+        }).start();
     }
 
     /**
@@ -381,25 +438,43 @@ public class WohlbefindenActivity extends AppCompatActivity {
 
     /**
      * Lädt den heutigen Eintrag (falls vorhanden) und stellt die UI entsprechend ein.
+     * WICHTIG: Läuft im Background Thread um Main Thread nicht zu blockieren.
      */
     private void loadTodaysEntry() {
-        WohlbefindenEintrag todaysEntry = wellbeingDao.getEintragNachDatum(currentDate);
+        // Background Thread für Datenbankzugriff
+        new Thread(() -> {
+            try {
+                // Datenbankzugriff im Background Thread
+                WohlbefindenEintrag todaysEntry = wellbeingDao.getEintragNachDatum(currentDate);
 
-        if (todaysEntry == null) {
-            return; // Kein Eintrag für heute vorhanden
-        }
+                // Zurück zum UI Thread für UI-Updates
+                runOnUiThread(() -> {
+                    if (todaysEntry == null) {
+                        return; // Kein Eintrag für heute vorhanden
+                    }
 
-        // Blutungsstärke wiederherstellen
-        restoreBleedingSelection(todaysEntry.getBlutungsstaerke());
+                    // Blutungsstärke wiederherstellen
+                    restoreBleedingSelection(todaysEntry.getBlutungsstaerke());
 
-        // Schmerzlevel wiederherstellen
-        restorePainSelection(todaysEntry.getSchmerzLevel());
+                    // Schmerzlevel wiederherstellen
+                    restorePainSelection(todaysEntry.getSchmerzLevel());
 
-        // Stimmung wiederherstellen
-        restoreMoodSelection(todaysEntry.getStimmung());
+                    // Stimmung wiederherstellen
+                    restoreMoodSelection(todaysEntry.getStimmung());
 
-        // Symptome wiederherstellen
-        restoreSymptomSelection(todaysEntry.getSymptome());
+                    // Symptome wiederherstellen
+                    restoreSymptomSelection(todaysEntry.getSymptome());
+                });
+
+            } catch (Exception e) {
+                // Fehlerbehandlung auf UI Thread
+                runOnUiThread(() -> {
+                    Toast.makeText(WohlbefindenActivity.this,
+                            "Fehler beim Laden des heutigen Eintrags: " + e.getMessage(),
+                            Toast.LENGTH_LONG).show();
+                });
+            }
+        }).start();
     }
 
     /**

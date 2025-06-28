@@ -8,18 +8,18 @@ import java.time.LocalDate;
 import java.util.List;
 
 /**
- * Этот класс помогает Room сохранять сложные типы данных в базу.
- * Room не умеет сохранять LocalDate и List<String> напрямую,
- * поэтому мы преобразуем их в String для сохранения.
+ * Diese Klasse hilft Room dabei, komplexe Datentypen in der Datenbank zu speichern.
+ * Room kann LocalDate und List<String> nicht direkt speichern,
+ * daher konvertieren wir sie zum Speichern in einen String.
  */
 public class DatumKonverter {
 
-    // Gson помогает преобразовывать списки в JSON строки
+    // Gson hilft bei der Umwandlung von Listen in JSON-Strings
     private static Gson gson = new Gson();
 
     /**
-     * Преобразует строку из базы данных в LocalDate
-     * Например: "2025-01-15" → LocalDate объект
+     * Konvertiert einen String aus der Datenbank in ein LocalDate.
+     * Beispiel: "2025-01-15" → LocalDate-Objekt
      */
     @TypeConverter
     public static LocalDate vonString(String wert) {
@@ -27,8 +27,8 @@ public class DatumKonverter {
     }
 
     /**
-     * Преобразует LocalDate в строку для сохранения в базе
-     * Например: LocalDate объект → "2025-01-15"
+     * Konvertiert ein LocalDate in einen String zum Speichern in der Datenbank.
+     * Beispiel: LocalDate-Objekt → "2025-01-15"
      */
     @TypeConverter
     public static String zuString(LocalDate datum) {
@@ -36,8 +36,8 @@ public class DatumKonverter {
     }
 
     /**
-     * Преобразует список строк в JSON строку
-     * Например: ["Kopfschmerzen", "Übelkeit"] → "[\"Kopfschmerzen\",\"Übelkeit\"]"
+     * Konvertiert eine Liste von Strings in einen JSON-String.
+     * Beispiel: ["Kopfschmerzen", "Übelkeit"] → "[\"Kopfschmerzen\",\"Übelkeit\"]"
      */
     @TypeConverter
     public static String vonStringListe(List<String> liste) {
@@ -48,8 +48,8 @@ public class DatumKonverter {
     }
 
     /**
-     * Преобразует JSON строку обратно в список
-     * Например: "[\"Kopfschmerzen\",\"Übelkeit\"]" → ["Kopfschmerzen", "Übelkeit"]
+     * Konvertiert einen JSON-String zurück in eine Liste.
+     * Beispiel: "[\"Kopfschmerzen\",\"Übelkeit\"]" → ["Kopfschmerzen", "Übelkeit"]
      */
     @TypeConverter
     public static List<String> zuStringListe(String wert) {

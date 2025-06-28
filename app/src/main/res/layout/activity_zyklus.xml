@@ -13,13 +13,13 @@
     - Violett: Eisprung
     - Blau: Fruchtbare Tage
 
-    Wichtig: Alle IDs in Englisch, alle sichtbaren Texte auf Deutsch
 -->
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#F5F5F5">
 
     <!-- Hauptinhalt mit Kalender und Informationskarten -->
     <ScrollView
@@ -53,12 +53,6 @@
                     android:textStyle="bold"
                     android:layout_weight="1" />
 
-                <ImageView
-                    android:id="@+id/btn_settings"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@android:drawable/ic_menu_manage"
-                    android:contentDescription="Einstellungen" />
             </LinearLayout>
 
             <!-- Kalender-Header mit Monatsnavigation -->
@@ -164,9 +158,11 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardElevation="4dp"
-                app:cardCornerRadius="12dp"
-                android:layout_marginBottom="16dp">
+                android:layout_marginBottom="16dp"
+                android:layout_marginStart="1dp"
+                android:layout_marginEnd="1dp"
+                app:cardElevation="2dp"
+                app:cardCornerRadius="16dp">
 
                 <LinearLayout
                     android:orientation="vertical"
@@ -183,13 +179,18 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
 
-                    <!-- Temperatur-Anzeige -->
+                    <!-- Temperatur-Anzeige (klickbar) -->
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:id="@+id/layout_temperature_sensor"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:layout_marginBottom="8dp"
-                        android:gravity="center_vertical">
+                        android:gravity="center_vertical"
+                        android:padding="8dp"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true">
 
                         <ImageView
                             android:layout_width="24dp"
@@ -200,18 +201,32 @@
 
                         <TextView
                             android:id="@+id/text_temperature_value"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:text="Temperatur: +0,2°C" />
+
+                        <!-- Pfeil-Icon für "mehr Details" -->
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:src="@drawable/ic_arrow_forward"
+                            android:layout_marginStart="8dp"
+                            app:tint="#999999" />
                     </LinearLayout>
 
-                    <!-- Puls-Anzeige -->
+                    <!-- Puls-Anzeige (klickbar) -->
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:id="@+id/layout_pulse_sensor"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:layout_marginBottom="8dp"
-                        android:gravity="center_vertical">
+                        android:gravity="center_vertical"
+                        android:padding="8dp"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true">
 
                         <ImageView
                             android:layout_width="24dp"
@@ -222,18 +237,32 @@
 
                         <TextView
                             android:id="@+id/text_pulse_value"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:text="Puls: 72 bpm" />
+
+                        <!-- Pfeil-Icon für "mehr Details" -->
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:src="@drawable/ic_arrow_forward"
+                            android:layout_marginStart="8dp"
+                            app:tint="#999999" />
                     </LinearLayout>
 
-                    <!-- SpO₂-Anzeige -->
+                    <!-- SpO₂-Anzeige (klickbar) -->
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:id="@+id/layout_spo2_sensor"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:layout_marginBottom="8dp"
-                        android:gravity="center_vertical">
+                        android:gravity="center_vertical"
+                        android:padding="8dp"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true">
 
                         <ImageView
                             android:layout_width="24dp"
@@ -244,9 +273,18 @@
 
                         <TextView
                             android:id="@+id/text_spo2_value"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:text="SpO₂: 98%" />
+
+                        <!-- Pfeil-Icon für "mehr Details" -->
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:src="@drawable/ic_arrow_forward"
+                            android:layout_marginStart="8dp"
+                            app:tint="#999999" />
                     </LinearLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -255,44 +293,67 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="4dp"
-                android:backgroundTint="#E1F0FF"
-                android:layout_marginBottom="16dp">
+                android:layout_marginBottom="16dp"
+                android:layout_marginStart="1dp"
+                android:layout_marginEnd="1dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp">
 
                 <LinearLayout
-                    android:padding="16dp"
                     android:orientation="vertical"
+                    android:padding="16dp"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:background="#E3F2FD">
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
-                        android:layout_marginBottom="8dp">
+                        android:layout_marginBottom="8dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
 
                         <ImageView
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:src="@drawable/info"
-                            android:contentDescription="Info"
                             android:layout_marginEnd="8dp" />
 
                         <TextView
-                            android:id="@+id/text_info_card_title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
                             android:text="Info-Karte"
-                            android:textStyle="bold"/>
+                            android:textStyle="bold"
+                            android:textSize="16sp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
                     </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/text_cycle_phase_info"
+                    <!-- Aktuelle Zyklusphase mit Zyklustag -->
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Du befindest dich in der Lutealphase. Temperatur steigt leicht an." />
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="8dp">
+
+                        <TextView
+                            android:id="@+id/text_cycle_phase_info"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="✓ Follikelphase"
+                            android:textColor="#4CAF50"
+                            android:textStyle="bold"
+                            android:textSize="15sp" />
+
+                        <TextView
+                            android:id="@+id/text_cycle_day_info"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Tag 6"
+                            android:layout_marginStart="8dp"
+                            android:textColor="#666666"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -300,10 +361,12 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="4dp"
-                android:backgroundTint="#FFF6D9"
-                android:layout_marginBottom="16dp">
+                android:layout_marginBottom="16dp"
+                android:layout_marginStart="1dp"
+                android:layout_marginEnd="1dp"
+                app:cardElevation="2dp"
+                app:cardCornerRadius="16dp"
+                android:backgroundTint="#FFF6D9">
 
                 <LinearLayout
                     android:padding="16dp"

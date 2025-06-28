@@ -43,7 +43,6 @@ public class WohlbefindenEintrag {
 
     /**
      * Primärschlüssel der Entität.
-     * Auto-generiert von Room, nicht manuell setzen.
      */
     @PrimaryKey(autoGenerate = true)
     private int id;

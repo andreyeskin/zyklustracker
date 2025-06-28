@@ -1,0 +1,462 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Dialog-Layout für detaillierte Sensor-Statistiken
+    VERSION: Header scrollt MIT dem Inhalt und verschwindet beim Scrollen
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/background_light"
+    android:fitsSystemWindows="true">
+
+    <!-- VOLLSTÄNDIG SCROLLBARER INHALT -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true"
+        android:clipToPadding="false"
+        android:scrollbars="vertical"
+        android:fadeScrollbars="false">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- HEADER - scrollt MIT dem Rest des Inhalts -->
+            <LinearLayout
+                android:id="@+id/layout_dialog_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="20dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/gradient_purple"
+                android:gravity="center_vertical"
+                android:elevation="4dp">
+
+                <!-- Sensor-Icon mit weißem Kreis-Hintergrund -->
+                <FrameLayout
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginEnd="16dp">
+
+                    <!-- Weißer Kreis-Hintergrund -->
+                    <View
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/circle_white_background" />
+
+                    <!-- Sensor-Symbol -->
+                    <ImageView
+                        android:id="@+id/icon_sensor_type"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/heart"
+                        android:contentDescription="Sensor-Symbol" />
+                </FrameLayout>
+
+                <!-- Sensor-Titel -->
+                <TextView
+                    android:id="@+id/text_sensor_titel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Puls-Statistiken"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/white" />
+
+                <!-- Schließen-Button -->
+                <ImageView
+                    android:id="@+id/btn_close_dialog"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:src="@android:drawable/ic_menu_close_clear_cancel"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    android:padding="6dp"
+                    android:contentDescription="Dialog schließen"
+                    app:tint="@android:color/white" />
+            </LinearLayout>
+
+            <!-- HAUPTINHALT - in einem Container -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:paddingTop="0dp">
+
+                <!-- Statistik-Übersichtskarten im 2x2 Raster -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginStart="1dp"
+                    android:layout_marginEnd="1dp"
+                    app:cardElevation="2dp"
+                    app:cardCornerRadius="16dp">
+
+                    <!-- Erste Reihe: Durchschnitt und Anzahl Messungen -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="4dp">
+
+                        <!-- Durchschnittswert-Karte -->
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="0dp"
+                            android:layout_height="120dp"
+                            android:layout_weight="1"
+                            android:layout_marginBottom="4dp"
+                            android:layout_marginStart="4dp"
+                            android:layout_marginEnd="4dp"
+                            app:cardElevation="2dp"
+                            app:cardCornerRadius="16dp"
+                            android:backgroundTint="@android:color/white">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical"
+                                android:padding="18dp"
+                                android:gravity="center">
+
+                                <!-- Durchschnitts-Icon -->
+                                <ImageView
+                                    android:layout_width="24dp"
+                                    android:layout_height="24dp"
+                                    android:layout_marginBottom="8dp"
+                                    android:src="@drawable/ic_nav_statistik"
+                                    app:tint="#2196F3" />
+
+                                <!-- Beschriftung -->
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Durchschnitt"
+                                    android:textSize="12sp"
+                                    android:textColor="#666666"
+                                    android:layout_marginBottom="4dp" />
+
+                                <!-- Wert -->
+                                <TextView
+                                    android:id="@+id/text_durchschnitt_wert"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="--"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold"
+                                    android:textColor="#2196F3" />
+                            </LinearLayout>
+                        </androidx.cardview.widget.CardView>
+
+                        <!-- Anzahl Messungen-Karte -->
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="0dp"
+                            android:layout_height="120dp"
+                            android:layout_weight="1"
+                            android:layout_marginBottom="4dp"
+                            android:layout_marginStart="4dp"
+                            android:layout_marginEnd="4dp"
+                            app:cardElevation="2dp"
+                            app:cardCornerRadius="16dp"
+                            android:backgroundTint="@android:color/white">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical"
+                                android:padding="18dp"
+                                android:gravity="center">
+
+                                <!-- Messungen-Icon -->
+                                <ImageView
+                                    android:layout_width="24dp"
+                                    android:layout_height="24dp"
+                                    android:layout_marginBottom="8dp"
+                                    android:src="@drawable/ic_nav_wohlbefinden"
+                                    app:tint="#4CAF50" />
+
+                                <!-- Beschriftung -->
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Messungen"
+                                    android:textSize="12sp"
+                                    android:textColor="#666666"
+                                    android:layout_marginBottom="4dp" />
+
+                                <!-- Wert -->
+                                <TextView
+                                    android:id="@+id/text_anzahl_messungen"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="0 Tage"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold"
+                                    android:textColor="#4CAF50" />
+                            </LinearLayout>
+                        </androidx.cardview.widget.CardView>
+                    </LinearLayout>
+
+                    <!-- Zweite Reihe: Minimum und Maximum -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <!-- Minimum-Karte -->
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="0dp"
+                            android:layout_height="120dp"
+                            android:layout_weight="1"
+                            android:layout_marginBottom="4dp"
+                            android:layout_marginStart="4dp"
+                            android:layout_marginEnd="4dp"
+                            app:cardElevation="2dp"
+                            app:cardCornerRadius="16dp"
+                            android:backgroundTint="@android:color/white">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:gravity="center"
+                                android:orientation="vertical"
+                                android:padding="18dp">
+
+                                <!-- Minimum-Icon -->
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="8dp"
+                                    android:text="⬇"
+                                    android:textSize="20sp" />
+
+                                <!-- Beschriftung -->
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="4dp"
+                                    android:text="Minimum"
+                                    android:textColor="#666666"
+                                    android:textSize="12sp" />
+
+                                <!-- Wert -->
+                                <TextView
+                                    android:id="@+id/text_minimum_wert"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="--"
+                                    android:textColor="#FF9800"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+                        </androidx.cardview.widget.CardView>
+
+                        <!-- Maximum-Karte -->
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="0dp"
+                            android:layout_height="120dp"
+                            android:layout_weight="1"
+                            android:layout_marginBottom="4dp"
+                            android:layout_marginStart="4dp"
+                            android:layout_marginEnd="4dp"
+                            app:cardElevation="2dp"
+                            app:cardCornerRadius="16dp"
+                            android:backgroundTint="@android:color/white">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:gravity="center"
+                                android:orientation="vertical"
+                                android:padding="18dp">
+
+                                <!-- Maximum-Icon -->
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="8dp"
+                                    android:text="⬆"
+                                    android:textSize="20sp" />
+
+                                <!-- Beschriftung -->
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="4dp"
+                                    android:text="Maximum"
+                                    android:textColor="#666666"
+                                    android:textSize="12sp" />
+
+                                <!-- Wert -->
+                                <TextView
+                                    android:id="@+id/text_maximum_wert"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="--"
+                                    android:textColor="#F44336"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+                        </androidx.cardview.widget.CardView>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Verlaufsdiagramm -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginStart="1dp"
+                    android:layout_marginEnd="1dp"
+                    app:cardElevation="2dp"
+                    app:cardCornerRadius="16dp"
+                    android:backgroundTint="@android:color/white">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="20dp">
+
+                        <!-- Diagramm-Titel -->
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Verlauf der letzten 30 Tage"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textColor="#333333"
+                            android:layout_marginBottom="16dp" />
+
+                        <!-- Diagramm -->
+                        <com.github.mikephil.charting.charts.LineChart
+                            android:id="@+id/chart_sensor_verlauf"
+                            android:layout_width="match_parent"
+                            android:layout_height="250dp" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- Medizinische Bewertung -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginStart="1dp"
+                    android:layout_marginEnd="1dp"
+                    app:cardElevation="2dp"
+                    app:cardCornerRadius="16dp"
+                    android:backgroundTint="#E8F5E8">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="20dp">
+
+                        <!-- Bewertungs-Überschrift -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginBottom="12dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="🏥"
+                                android:textSize="20sp"
+                                android:layout_marginEnd="12dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Medizinische Bewertung"
+                                android:textSize="16sp"
+                                android:textStyle="bold"
+                                android:textColor="#2E7D32" />
+                        </LinearLayout>
+
+                        <!-- Bewertungstext -->
+                        <TextView
+                            android:id="@+id/text_medizinische_bewertung"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Noch nicht genug Daten für aussagekräftige Statistiken."
+                            android:textSize="14sp"
+                            android:textColor="#2E7D32"
+                            android:lineSpacingExtra="3dp"
+                            android:layout_marginBottom="16dp" />
+
+                        <!-- Empfehlungs-Überschrift -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginBottom="12dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="💡"
+                                android:textSize="20sp"
+                                android:layout_marginEnd="12dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Empfehlungen"
+                                android:textSize="16sp"
+                                android:textStyle="bold"
+                                android:textColor="#2E7D32" />
+                        </LinearLayout>
+
+                        <!-- Empfehlungstext -->
+                        <TextView
+                            android:id="@+id/text_empfehlungen"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Messen Sie regelmäßig zur gleichen Zeit für beste Ergebnisse."
+                            android:textSize="14sp"
+                            android:textColor="#2E7D32"
+                            android:lineSpacingExtra="3dp" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- Zusätzlicher Abstand für besseres Scrollen -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- FIXIERTER SCHLIESSEN-BUTTON - bleibt unten stehen -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_dialog_schliessen"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_margin="20dp"
+        android:text="Schließen"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        app:backgroundTint="@color/fuchsia"
+        app:cornerRadius="28dp"
+        android:elevation="6dp" />
+
+</LinearLayout>

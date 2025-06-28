@@ -1,8 +1,15 @@
+import com.android.build.gradle.AppExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.gradle.api.tasks.javadoc.Javadoc
+import org.gradle.external.javadoc.StandardJavadocDocletOptions
+
+
 
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+
+
 }
 
 
@@ -12,7 +19,7 @@ android {
 
     defaultConfig {
         applicationId = "at.fhj.andrey.zyklustracker"
-        minSdk = 28  // Health Connect требует минимум Android 9 (API 28)
+        minSdk = 28
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
@@ -48,13 +55,13 @@ android {
         viewBinding = true
     }
 }
-// <-- Добавляем блок kotlin { jvmToolchain }
+
 kotlin {
-    jvmToolchain(17)  // указываем Java 17 для Kotlin
+    jvmToolchain(17)
 }
 tasks.withType<KotlinCompile>().configureEach {
     kotlinOptions {
-        jvmTarget = "17" // JVM-таргет для компилятора Kotlin
+        jvmTarget = "17"
     }
 }
 
@@ -73,21 +80,21 @@ dependencies {
     implementation(libs.constraintlayout)
     implementation(libs.core.ktx)
 
-    // Java 8+ API desugaring для LocalDate
+
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 
-    // ===== HEALTH CONNECT - СТАБИЛЬНАЯ ВЕРСИЯ 2025 =====
+    // ===== HEALTH CONNECT  2025 =====
     implementation("androidx.health.connect:connect-client:1.1.0-rc01")
 
-    // Lifecycle для Health Connect
+
     implementation("androidx.lifecycle:lifecycle-runtime:2.7.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel:2.7.0")
 
-    // Activity Result API для permissions
+    // Activity Result API  permissions
     implementation("androidx.activity:activity:1.8.2")
     implementation("androidx.fragment:fragment:1.6.2")
 
-    // Coroutines для Java-Health Connect bridge
+    // Coroutines Java-Health Connect bridge
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
 
@@ -112,4 +119,18 @@ dependencies {
     // ===== CONCURRENT UTILITIES =====
     implementation("androidx.concurrent:concurrent-futures:1.1.0")
     implementation("com.google.guava:guava:31.1-android")
+
+}
+
+
+
+
+tasks.register<org.jetbrains.dokka.gradle.DokkaTask>("dokkaHtml") {
+    outputDirectory.set(buildDir.resolve("dokka/html"))
+    dokkaSourceSets {
+        named("main") {
+            noAndroidSdkLink.set(false)
+            includeNonPublic.set(false)
+        }
+    }
 }

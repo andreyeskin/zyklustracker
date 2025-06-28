@@ -9,71 +9,72 @@ import java.time.LocalDate;
 import java.util.List;
 
 /**
- * DAO = Data Access Object (Объект доступа к данным)
- * Этот интерфейс определяет все операции с таблицей periode_eintraege
- * Room автоматически создаст реализацию этих методов
+ * DAO = Data Access Object (Datenzugriffsobjekt)
+ * Dieses Interface definiert alle Operationen mit der Tabelle periode_eintraege.
+ * Room erstellt automatisch die Implementierung dieser Methoden.
  */
 @Dao
 public interface PeriodeDao {
 
     /**
-     * Получить все реальные периоды (не прогнозы)
-     * Сортировка по дате - новые сверху
+     * Alle echten Perioden (keine Prognosen) abrufen.
+     * Sortierung nach Datum - neueste zuerst.
      */
     @Query("SELECT * FROM periode_eintraege WHERE istPrognose = 0 ORDER BY datum DESC")
     List<PeriodeEintrag> getAlleEchtenPerioden();
 
     /**
-     * Получить все прогнозируемые периоды
-     * Сортировка по дате - старые сверху
+     * Alle prognostizierten Perioden abrufen.
+     * Sortierung nach Datum - älteste zuerst.
      */
     @Query("SELECT * FROM periode_eintraege WHERE istPrognose = 1 ORDER BY datum ASC")
     List<PeriodeEintrag> getAllePrognostizierten();
 
     /**
-     * Найти период по конкретной дате
+     * Periode anhand eines bestimmten Datums finden.
      */
     @Query("SELECT * FROM periode_eintraege WHERE datum = :datum")
     PeriodeEintrag getPeriodeNachDatum(LocalDate datum);
 
     /**
-     * Получить все периоды между двумя датами
+     * Alle Perioden zwischen zwei Daten abrufen.
      */
     @Query("SELECT * FROM periode_eintraege WHERE datum BETWEEN :startDatum AND :endDatum")
     List<PeriodeEintrag> getPeriodenZwischen(LocalDate startDatum, LocalDate endDatum);
 
     /**
-     * Добавить одну новую запись о периоде
+     * Einen neuen Periodeneintrag hinzufügen.
      */
     @Insert
     void einfuegenPeriode(PeriodeEintrag periode);
 
     /**
-     * Добавить несколько записей о периодах сразу
+     * Mehrere Periodeneinträge gleichzeitig hinzufügen.
      */
     @Insert
     void einfuegenMehrerePerioden(List<PeriodeEintrag> perioden);
 
     /**
-     * Обновить существующую запись
+     * Einen bestehenden Eintrag aktualisieren.
      */
     @Update
     void aktualisierenPeriode(PeriodeEintrag periode);
 
     /**
-     * Удалить запись о периоде
+     * Periode anhand des Datums löschen.
      */
     @Delete
     void loeschenPeriode(PeriodeEintrag periode);
 
     /**
-     * Удалить период по дате
+     * Periode anhand des Datums löschen.
      */
     @Query("DELETE FROM periode_eintraege WHERE datum = :datum")
     void loeschenPeriodeNachDatum(LocalDate datum);
 
+
     /**
-     * Удалить все прогнозы (при пересчете)
+     * Alle Prognosen löschen (bei Neuberechnung).
      */
     @Query("DELETE FROM periode_eintraege WHERE istPrognose = 1")
     void loeschenAllePrognosen();

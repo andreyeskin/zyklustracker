@@ -13,16 +13,6 @@ import java.util.Set;
 import at.fhj.andrey.zyklustracker.datenbank.WohlbefindenDao;
 import at.fhj.andrey.zyklustracker.datenbank.WohlbefindenEintrag;
 import at.fhj.andrey.zyklustracker.datenbank.ZyklusDatenbank;
-// Убираем импорты kotlinx.coroutines, так как ZyklusSensorManager теперь не запускает корутины сам
-// import kotlinx.coroutines.BuildersKt;
-// import kotlinx.coroutines.CoroutineScope;
-// import kotlinx.coroutines.Dispatchers;
-// import kotlinx.coroutines.GlobalScope;
-// import kotlinx.coroutines.Job;
-// import kotlin.Unit;
-// import kotlin.jvm.functions.Function2;
-
-// Используем Kotlin data class SensorData напрямую
 import kotlin.Unit;
 
 public class ZyklusSensorManager {
@@ -56,7 +46,7 @@ public class ZyklusSensorManager {
         this.wohlbefindenDao = datenbank.wohlbefindenDao();
         this.aktuelleHcDaten = null;
         this.realHealthConnectManager = new RealHealthConnectManager(this.context);
-        Log.d(TAG, "ZyklusSensorManager (Health Connect с коллбэками) инициализирован.");
+        Log.d(TAG, "ZyklusSensorManager (Health Connect mit Callbacks) erfolgreich initialisiert");
     }
 
     public void setzeCallback(SensorCallback callback) {
@@ -64,34 +54,34 @@ public class ZyklusSensorManager {
     }
 
     public void starteMessung() {
-        Log.d(TAG, "starteMessung() вызван.");
-        this.aktuelleHcDaten = null; // Сброс перед новым запросом
+        Log.d(TAG, "Neue Sensordaten-Messung gestartet");
+        this.aktuelleHcDaten = null; //Vorherige Daten zurücksetzen für neue Messung
         requestAndReadHealthConnectData();
     }
 
     public void stoppeMessung() {
-        Log.d(TAG, "stoppeMessung() вызван. Очистка RealHealthConnectManager.");
+        Log.d(TAG, "Sensordaten-Erfassung gestoppt - Cleanup wird durchgeführt");
         if (realHealthConnectManager != null) {
-            realHealthConnectManager.cleanup(); // Важно для отмены корутин в RealHealthConnectManager
+            realHealthConnectManager.cleanup(); // Wichtig: Beendet laufende Koroutinen im Health Connect Manager
         }
     }
 
     private void requestAndReadHealthConnectData() {
-        Log.d(TAG, "requestAndReadHealthConnectData() запущен.");
+        Log.d(TAG, "Health Connect Datenerfassung wird gestartet");
 
         int sdkStatus = HealthConnectClient.getSdkStatus(context);
 
         if (sdkStatus == HealthConnectClient.SDK_UNAVAILABLE) {
-            Log.w(TAG, "Health Connect SDK недоступен.");
+            Log.w(TAG, "Health Connect SDK ist auf diesem Gerät nicht verfügbar");
             if (callback != null) {
-                callback.keineDatenVerfuegbar("Health Connect недоступен на этом устройстве.");
+                callback.keineDatenVerfuegbar("Health Connect ist auf diesem Gerät nicht verfügbar");
             }
             return;
         }
         if (sdkStatus == HealthConnectClient.SDK_UNAVAILABLE_PROVIDER_UPDATE_REQUIRED) {
-            Log.w(TAG, "Требуется обновление Health Connect провайдера.");
+            Log.w(TAG, "Health Connect Provider benötigt ein Update");
             if (callback != null) {
-                callback.keineDatenVerfuegbar("Пожалуйста, обновите приложение Health Connect.");
+                callback.keineDatenVerfuegbar("Bitte aktualisieren Sie die Health Connect App");
             }
             return;
         }
@@ -108,26 +98,24 @@ public class ZyklusSensorManager {
         Set<String> requiredPermissions = realHealthConnectManager.getRequiredPermissionsSet();
 
         if (!grantedPermissions.containsAll(requiredPermissions)) {
-            Log.w(TAG, "Не все разрешения Health Connect предоставлены.");
+            Log.w(TAG, "Nicht alle erforderlichen Health Connect Berechtigungen erteilt");
             if (callback instanceof HealthConnectPermissionRequester) {
                 ((HealthConnectPermissionRequester) callback).requestHealthConnectPermissions(requiredPermissions);
             } else {
-                Log.e(TAG, "Callback не реализует HealthConnectPermissionRequester!");
+                Log.e(TAG, "Callback implementiert nicht HealthConnectPermissionRequester Interface");
                 if (callback != null) {
-                    callback.sensorFehler("Ошибка конфигурации: запрос разрешений HC невозможен.");
+                    callback.sensorFehler("Konfigurationsfehler: Health Connect Berechtigungs-Anfrage nicht möglich");
                 }
             }
             if (callback != null) {
-                callback.keineDatenVerfuegbar("Требуются разрешения Health Connect.");
+                callback.keineDatenVerfuegbar("Health Connect Berechtigungen erforderlich");
             }
             return null;
         }
-
-        // Замените строки 125-128 на:
-        Log.d(TAG, "Разрешения HC есть. Читаю данные из Health Connect...");
+        Log.d(TAG, "Health Connect Berechtigungen verfügbar - Sensordaten werden abgerufen");
         realHealthConnectManager.readLatestSensorData(
-                hcData -> onSensorDataReceived(hcData),  // лямбда вместо this::onSensorDataReceived
-                error -> onSensorDataError(error)        // лямбда вместо this::onSensorDataError
+                hcData -> onSensorDataReceived(hcData),
+                error -> onSensorDataError(error)
         );
         return null;
     }
@@ -135,100 +123,199 @@ public class ZyklusSensorManager {
     private @NotNull Unit onSensorDataReceived(SensorData hcData) {
         if (hcData != null) {
             this.aktuelleHcDaten = hcData;
-            Log.d(TAG, "Health Connect данные получены: " + hcData.toString());
+            Log.d(TAG, "Health Connect Sensordaten erfolgreich empfangen: " + hcData.toString());
             if (callback != null) {
                 callback.datenVerfuegbar(hcData);
             }
             speichereDatenInDb();
         } else {
-            Log.w(TAG, "Данные из Health Connect не получены или пусты.");
+            Log.w(TAG, "Keine Health Connect Sensordaten empfangen oder Daten sind leer");
             this.aktuelleHcDaten = null;
             if (callback != null) {
-                callback.keineDatenVerfuegbar("Нет актуальных данных в Health Connect за последний час.");
+                callback.keineDatenVerfuegbar("Keine aktuellen Sensordaten in Health Connect verfügbar");
             }
         }
         return null;
     }
 
     private @NotNull Unit onSensorDataError(Exception error) {
-        Log.e(TAG, "Ошибка при чтении данных из Health Connect: " + error.getMessage(), error);
+        Log.e(TAG, "Fehler beim Abrufen der Health Connect Sensordaten: " + error.getMessage(), error);
         this.aktuelleHcDaten = null;
         if (callback != null) {
-            callback.sensorFehler("Health Connect ошибка чтения данных: " + error.getMessage());
-            callback.keineDatenVerfuegbar("Ошибка при чтении данных из Health Connect.");
+            callback.sensorFehler("Health Connect Datenlesefehler: " + error.getMessage());
+            callback.keineDatenVerfuegbar("Fehler beim Abrufen der Health Connect Sensordaten");
         }
         return null;
     }
     private @NotNull Unit onPermissionsError(Exception error) {
-        Log.e(TAG, "Ошибка при проверке разрешений Health Connect: " + error.getMessage(), error);
+        Log.e(TAG, "Fehler bei Health Connect Berechtigungs-Prüfung: " + error.getMessage(), error);
         this.aktuelleHcDaten = null;
         if (callback != null) {
             callback.sensorFehler("Health Connect ошибка проверки разрешений: " + error.getMessage());
-            callback.keineDatenVerfuegbar("Ошибка при проверке разрешений Health Connect.");
+            callback.keineDatenVerfuegbar("Fehler bei der Health Connect Berechtigungs-Prüfung");
         }
         return null;
     }
 
+    /**
+     * 2. SPEICHER-PROZESS (bereits implementiert):
+     * ============================================
+     */
+
+// In ZyklusSensorManager.java - speichereDatenInDb() Methode:
     private void speichereDatenInDb() {
         if (aktuelleHcDaten == null) {
-            Log.d(TAG, "Нет данных HC для сохранения в БД.");
+            Log.d(TAG, "Keine Health Connect Daten zum Speichern verfügbar.");
             return;
         }
 
         LocalDate heute = LocalDate.now();
+        Log.d(TAG, "Starte Speicherung der Sensordaten für: " + heute);
 
-        // ВАЖНО: Все операции с БД должны быть в фоновом потоке!
+        // WICHTIG: Background-Thread für Datenbankoperationen
         new Thread(() -> {
             try {
-                // Получаем eintrag в фоновом потоке
+                // Schritt 1: Bestehenden oder neuen Eintrag holen
                 WohlbefindenEintrag eintrag = wohlbefindenDao.getEintragNachDatum(heute);
-                if (eintrag == null) {
+                boolean istNeuerEintrag = (eintrag == null);
+
+                if (istNeuerEintrag) {
                     eintrag = new WohlbefindenEintrag(heute);
-                }
-
-                boolean aktualisiert = false;
-
-                // Копируем актуальные данные (они не изменятся, так как final)
-                SensorData hcData = aktuelleHcDaten;
-
-                if (hcData.getHeartRate() > 0) {
-                    eintrag.setPuls((int) hcData.getHeartRate());
-                    aktualisiert = true;
-                }
-                if (hcData.getOxygenSaturation() > 0) {
-                    eintrag.setSpo2((int) hcData.getOxygenSaturation());
-                    aktualisiert = true;
-                }
-                if (hcData.getBodyTemperature() > 0) {
-                    eintrag.setTemperatur(hcData.getBodyTemperature());
-                    aktualisiert = true;
-                }
-
-                if (aktualisiert) {
-                    // Сохраняем в БД (уже в фоновом потоке)
-                    if (wohlbefindenDao.existiertEintrag(heute) > 0) {
-                        wohlbefindenDao.aktualisierenEintrag(eintrag);
-                    } else {
-                        wohlbefindenDao.einfuegenEintrag(eintrag);
-                    }
-                    Log.d(TAG, "Данные из Health Connect сохранены в БД для " + heute);
+                    Log.d(TAG, "Neuer Wohlbefinden-Eintrag erstellt für: " + heute);
                 } else {
-                    Log.d(TAG, "Полученные данные HC не содержали значений для обновления в БД.");
+                    Log.d(TAG, "Bestehender Eintrag gefunden für: " + heute);
+                }
+
+                boolean datenAktualisiert = false;
+                StringBuilder updateLog = new StringBuilder("Aktualisierte Sensordaten: ");
+
+                // Schritt 2: Validierung und Speicherung der Sensordaten
+
+                // 2a) Herzfrequenz validieren und speichern
+                if (istValidePulsfrequenz(aktuelleHcDaten.getHeartRate())) {
+                    int neuePulsfrequenz = (int) aktuelleHcDaten.getHeartRate();
+                    eintrag.setPuls(neuePulsfrequenz);
+                    updateLog.append("Puls=").append(neuePulsfrequenz).append("bpm ");
+                    datenAktualisiert = true;
+                    Log.d(TAG, "Pulsfrequenz gespeichert: " + neuePulsfrequenz + " bpm");
+                } else {
+                    Log.w(TAG, "Ungültige Pulsfrequenz ignoriert: " + aktuelleHcDaten.getHeartRate());
+                }
+
+                // 2b) Sauerstoffsättigung validieren und speichern
+                if (istValideSpO2(aktuelleHcDaten.getOxygenSaturation())) {
+                    int neueSpO2 = (int) aktuelleHcDaten.getOxygenSaturation();
+                    eintrag.setSpo2(neueSpO2);
+                    updateLog.append("SpO2=").append(neueSpO2).append("% ");
+                    datenAktualisiert = true;
+                    Log.d(TAG, "Sauerstoffsättigung gespeichert: " + neueSpO2 + "%");
+                } else {
+                    Log.w(TAG, "Ungültige SpO2-Werte ignoriert: " + aktuelleHcDaten.getOxygenSaturation());
+                }
+
+                // 2c) Körpertemperatur validieren und speichern
+                if (istValideTemperatur(aktuelleHcDaten.getBodyTemperature())) {
+                    float neueTemperatur = aktuelleHcDaten.getBodyTemperature();
+                    eintrag.setTemperatur(neueTemperatur);
+                    updateLog.append("Temp=").append(String.format("%.1f", neueTemperatur)).append("°C ");
+                    datenAktualisiert = true;
+                    Log.d(TAG, "Körpertemperatur gespeichert: " + String.format("%.1f", neueTemperatur) + "°C");
+                } else {
+                    Log.w(TAG, "Ungültige Temperatur ignoriert: " + aktuelleHcDaten.getBodyTemperature());
+                }
+
+                // Schritt 3: In Datenbank speichern falls Daten aktualisiert wurden
+                if (datenAktualisiert) {
+                    if (istNeuerEintrag) {
+                        wohlbefindenDao.einfuegenEintrag(eintrag);
+                        Log.i(TAG, "Neuer Wohlbefinden-Eintrag mit Sensordaten erstellt");
+                    } else {
+                        wohlbefindenDao.aktualisierenEintrag(eintrag);
+                        Log.i(TAG, "Bestehender Eintrag mit neuen Sensordaten aktualisiert");
+                    }
+
+                    Log.i(TAG, updateLog.toString());
+
+                    // UI über erfolgreiche Speicherung informieren
+                    benachrichtigeUeberErfolgreicheSpeicherung();
+
+                } else {
+                    Log.w(TAG, "Keine gültigen Sensordaten zum Speichern gefunden");
+                    benachrichtigeUeberUngueltigeDaten();
                 }
 
             } catch (Exception e) {
-                Log.e(TAG, "Ошибка при сохранении данных из Health Connect в БД", e);
-
-                // Переключаемся на главный поток для callback UI
-                if (context != null && callback != null) {
-                    android.os.Handler mainHandler = new android.os.Handler(context.getMainLooper());
-                    mainHandler.post(() -> {
-                        callback.sensorFehler("Ошибка сохранения данных: " + e.getMessage());
-                    });
-                }
+                Log.e(TAG, "Fehler beim Speichern der Sensordaten in die Datenbank", e);
+                benachrichtigeUeberSpeicherFehler(e.getMessage());
             }
         }).start();
     }
+
+    /**
+     * Validiert die Pulsfrequenz auf realistische Werte
+     */
+    private boolean istValidePulsfrequenz(float puls) {
+        return puls > 0 && puls >= 40 && puls <= 200; // Realistischer Bereich für Ruhepuls
+    }
+
+    /**
+     * Validiert die Sauerstoffsättigung auf medizinisch sinnvolle Werte
+     */
+    private boolean istValideSpO2(float spo2) {
+        return spo2 > 0 && spo2 >= 80 && spo2 <= 100; // Medizinisch relevanter Bereich
+    }
+
+    /**
+     * Validiert die Körpertemperatur auf physiologisch mögliche Werte
+     */
+    private boolean istValideTemperatur(float temperatur) {
+        return temperatur > 0 && temperatur >= 30.0f && temperatur <= 45.0f; // Überlebensfähiger Bereich
+    }
+
+    /**
+     * Benachrichtigt die UI über erfolgreiche Datenspeicherung
+     */
+    private void benachrichtigeUeberErfolgreicheSpeicherung() {
+        if (context != null) {
+            android.os.Handler mainHandler = new android.os.Handler(context.getMainLooper());
+            mainHandler.post(() -> {
+                if (callback != null) {
+                    // Wir können den Callback erweitern oder einfach loggen
+                    Log.i(TAG, "Sensordaten erfolgreich in Datenbank gespeichert");
+                }
+            });
+        }
+    }
+
+    /**
+     * Benachrichtigt über ungültige Sensordaten
+     */
+    private void benachrichtigeUeberUngueltigeDaten() {
+        if (context != null && callback != null) {
+            android.os.Handler mainHandler = new android.os.Handler(context.getMainLooper());
+            mainHandler.post(() -> {
+                callback.keineDatenVerfuegbar("Sensordaten außerhalb gültiger Bereiche");
+            });
+        }
+    }
+
+    /**
+     * Benachrichtigt über Datenbankfehler
+     */
+    private void benachrichtigeUeberSpeicherFehler(String fehlerNachricht) {
+        if (context != null && callback != null) {
+            android.os.Handler mainHandler = new android.os.Handler(context.getMainLooper());
+            mainHandler.post(() -> {
+                callback.sensorFehler("Datenbank-Speicherfehler: " + fehlerNachricht);
+            });
+        }
+    }
+
+
+
+
+
+
     public SensorData getAktuelleHcDaten() {
         return aktuelleHcDaten;
     }

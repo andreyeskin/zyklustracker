@@ -25,11 +25,32 @@ import androidx.room.TypeConverters;
  * Besonderheiten:
  * - TypeConverters für LocalDate und List<String> Konvertierung
  * - Fallback zu destruktiver Migration bei Schema-Änderungen
- * - Main-Thread-Queries für vereinfachte Entwicklung (nicht produktionsreif!)
+ * - Produktionsreife Implementierung: Alle Datenbankoperationen müssen in Background-Threads ausgeführt werden
  *
  * Schema-Version: 2
  * - Version 1: Nur PeriodeEintrag
  * - Version 2: Hinzufügung von WohlbefindenEintrag
+ *
+ * Wichtiger Hinweis zu Threading:
+ * Diese Datenbank-Implementierung erlaubt KEINE Main-Thread-Queries mehr.
+ * Alle Datenbankoperationen müssen in Background-Threads ausgeführt werden:
+ *
+ * Beispiel für korrekte Verwendung:
+ * ```java
+ * new Thread(() -> {
+ *     try {
+ *         // Datenbankoperationen hier
+ *         List<PeriodeEintrag> perioden = periodeDao.getAllePerioden();
+ *
+ *         // UI-Updates auf Main-Thread
+ *         runOnUiThread(() -> {
+ *             // UI aktualisieren
+ *         });
+ *     } catch (Exception e) {
+ *         Log.e("DB", "Fehler", e);
+ *     }
+ * }).start();
+ * ```
  *
  * @author Andrey Eskin
  * @version 2.0
@@ -79,8 +100,11 @@ public abstract class ZyklusDatenbank extends RoomDatabase {
      *
      * Konfiguration:
      * - Fallback zu destruktiver Migration bei Schema-Änderungen
-     * - Main-Thread-Queries erlaubt (nur für Entwicklung!)
+     * - Produktionsreife Einstellung: Keine Main-Thread-Queries erlaubt
      * - Datenbankdatei: "zyklus_datenbank"
+     *
+     * WICHTIG: Alle Datenbankoperationen müssen in Background-Threads ausgeführt werden!
+     * Die Datenbank blockiert Main-Thread-Zugriffe und wirft eine IllegalStateException.
      *
      * @param context Anwendungskontext für die Datenbankinitialisierung
      * @return Singleton-Instanz der ZyklusDatenbank
@@ -93,7 +117,7 @@ public abstract class ZyklusDatenbank extends RoomDatabase {
                             "zyklus_datenbank" // Name der Datenbankdatei
                     )
                     .fallbackToDestructiveMigration() // Bei Schema-Änderungen: DB neu erstellen
-                    .allowMainThreadQueries()         // ACHTUNG: Nur für Entwicklung!
+                    // HINWEIS: .allowMainThreadQueries() wurde entfernt für Produktionsreife!!!!!!
                     .build();
         }
         return instanz;

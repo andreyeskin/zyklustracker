@@ -1,5 +1,7 @@
 package at.fhj.andrey.zyklustracker;
 
+import static android.content.ContentValues.TAG;
+
 import at.fhj.andrey.zyklustracker.datenbank.*;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -17,7 +19,6 @@ import androidx.core.content.ContextCompat;
 import androidx.core.util.Pair;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.button.MaterialButton;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.kizitonwose.calendarview.model.CalendarDay;
@@ -35,22 +36,23 @@ import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import kotlin.Unit;
-import kotlin.jvm.functions.Function1;
 
 // Sensor-Integration
 import at.fhj.andrey.zyklustracker.sensors.ZyklusSensorManager;
 import at.fhj.andrey.zyklustracker.sensors.SensorData;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.core.content.ContextCompat;
+
 import android.content.pm.PackageManager;
 import android.widget.Toast;
 import android.util.Log;
+import at.fhj.andrey.zyklustracker.statistik.StatistikManager;
+import at.fhj.andrey.zyklustracker.zyklusanalyse.AnalyseErgebnis;
+import at.fhj.andrey.zyklustracker.zyklusanalyse.ZyklusPhaseBerechnung;
 
 /**
  * ZyklusActivity - Hauptaktivität für die Zyklusanzeige und -verwaltung
@@ -66,7 +68,6 @@ import android.util.Log;
  *
  * Kalender-Farbschema:
  * - Rot: Menstruationstage (echte Daten)
- * - Rosa: Prognostizierte Menstruation
  * - Violett: Eisprung (14 Tage vor nächster Periode)
  * - Blau: Fruchtbare Phase (5 Tage vor Eisprung)
  *
@@ -107,6 +108,10 @@ public class ZyklusActivity extends AppCompatActivity
     private TextView temperatureValueText;
     private TextView pulseValueText;
     private TextView spo2ValueText;
+    // ===== NEUE ZYKLUSPHASEN-INTEGRATION =====
+    private StatistikManager statistikManager;
+    private TextView aktuellePhaseText;
+    private TextView zyklusTagText;
 
     // Berechtigungen verwalten
     private ActivityResultLauncher<String[]> permissionLauncher;
@@ -122,12 +127,6 @@ public class ZyklusActivity extends AppCompatActivity
         // Datenbank initialisieren
         initializeDatabase();
 
-        // Menstruationsdaten aus der Datenbank laden
-        loadMenstruationDataFromDatabase();
-
-        // Fruchtbarkeitsberechnungen durchführen
-        calculateFertilityData();
-
         // Bottom Navigation konfigurieren
         setupBottomNavigation();
 
@@ -136,6 +135,9 @@ public class ZyklusActivity extends AppCompatActivity
 
         // Floating Action Button für Periodeneingabe konfigurieren
         setupPeriodInputButton();
+        // Sensor-Click-Handler konfigurieren
+        setupSensorClickHandlers();
+
 
         // Sensor-Integration initialisieren
         initializeSensors();
@@ -143,6 +145,15 @@ public class ZyklusActivity extends AppCompatActivity
         fordereBerechtigungenAn();
         starteSensorMessung();
 
+        //  Diese beiden Aufrufe am Ende, da sie asynchron sind
+        loadMenstruationDataFromDatabase();  // Lädt Daten im Background
+        ladeSensordatenFuerAnzeige();        // Lädt Sensordaten im Background
+
+        // StatistikManager für Zyklusphasen-Analyse initialisieren
+        statistikManager = new StatistikManager(this);
+
+// Aktuelle Zyklusphase laden und anzeigen
+        ladeAktuelleZyklusphase();
     }
 
     /**
@@ -157,6 +168,9 @@ public class ZyklusActivity extends AppCompatActivity
         temperatureValueText = findViewById(R.id.text_temperature_value);
         pulseValueText = findViewById(R.id.text_pulse_value);
         spo2ValueText = findViewById(R.id.text_spo2_value);
+        // Neue UI-Komponenten für Zyklusphase
+        aktuellePhaseText = findViewById(R.id.text_cycle_phase_info);
+        zyklusTagText = findViewById(R.id.text_cycle_day_info);
     }
 
     /**
@@ -171,7 +185,6 @@ public class ZyklusActivity extends AppCompatActivity
      */
     private void initializeSensors() {
         sensorManager = new ZyklusSensorManager(this);
-        // Используем this как callback (ZyklusActivity реализует нужные интерфейсы)
         sensorManager.setzeCallback(this);
     }
     private void setupPermissionLauncher() {
@@ -197,17 +210,12 @@ public class ZyklusActivity extends AppCompatActivity
     /**
      * Fordert die notwendigen Sensor-Berechtigungen an
      */
-    /**
-     * Fordert die notwendigen Sensor-Berechtigungen an (включая Health Connect)
-     */
     private void fordereBerechtigungenAn() {
         String[] berechtigungen = {
                 android.Manifest.permission.BODY_SENSORS,
-                // Health Connect разрешения добавлены в Manifest, но здесь не нужны
-                // Health Connect использует свой собственный permission system
         };
 
-        // Прüfen welche Berechtigungen noch fehlen (только базовые)
+        // Prüfen welche Berechtigungen noch fehlen
         List<String> zuFordernde = new ArrayList<>();
         for (String berechtigung : berechtigungen) {
             if (ContextCompat.checkSelfPermission(this, berechtigung)
@@ -217,7 +225,7 @@ public class ZyklusActivity extends AppCompatActivity
         }
 
         if (zuFordernde.isEmpty()) {
-            // Alle базовые Berechtigungen bereits vorhanden
+            // Alle Berechtigungen bereits vorhanden
             starteSensorMessung();
         } else {
             // Berechtigungen anfordern
@@ -228,20 +236,9 @@ public class ZyklusActivity extends AppCompatActivity
     /**
      * Startet die Sensor-Messungen
      */
-    /**
-     * Startet die Sensor-Messungen (включая Health Connect)
-     */
-    /**
-     * Startet die Sensor-Messungen (включая Health Connect)
-     */
-    // В ZyklusActivity.java найдите метод starteSensorMessung() (строки примерно 245-265) и замените на:
-
-    /**
-     * Startet die Sensor-Messungen (включая Health Connect)
-     */
     private void starteSensorMessung() {
         if (sensorManager != null) {
-            // ZyklusSensorManager.starteMessung() возвращает void, не boolean
+            // ZyklusSensorManager.starteMessung()
             sensorManager.starteMessung();
 
             Toast.makeText(this, "Sensor-Messung gestartet", Toast.LENGTH_SHORT).show();
@@ -249,11 +246,6 @@ public class ZyklusActivity extends AppCompatActivity
                     Toast.LENGTH_SHORT).show();
         }
     }
-
-    /**
-     * Zeigt Dialog bei verweigerten Berechtigungen
-     */
-    // В ZyklusActivity.java найдите метод zeigeBerechtigungVerweigertDialog() и замените на:
 
     /**
      * Zeigt Dialog bei verweigerten Berechtigungen
@@ -279,22 +271,55 @@ public class ZyklusActivity extends AppCompatActivity
     /**
      * Lädt alle Menstruationsdaten aus der Room-Datenbank.
      * Filtert nur echte Periodendaten (keine Prognosen).
+     * WICHTIG: Läuft jetzt im Background Thread!
      */
     private void loadMenstruationDataFromDatabase() {
-        menstruationDays.clear(); // Bestehende Liste leeren
+        // Background Thread für Datenbankzugriff
+        new Thread(() -> {
+            try {
+                Log.d("ZyklusActivity", "Lade Menstruationsdaten aus der Datenbank...");
 
-        // Alle echten Periodeneinträge aus der Datenbank abrufen
-        List<PeriodeEintrag> entries = periodDao.getAlleEchtenPerioden();
+                // Bestehende Liste leeren (auf Background Thread sicher)
+                menstruationDays.clear();
 
-        // PeriodeEintrag-Objekte in LocalDate umwandeln und zur Liste hinzufügen
-        for (PeriodeEintrag entry : entries) {
-            menstruationDays.add(entry.getDatum());
-        }
+                // Alle echten Periodeneinträge aus der Datenbank abrufen (Background Thread)
+                List<PeriodeEintrag> entries = periodDao.getAlleEchtenPerioden();
+
+                // PeriodeEintrag-Objekte in LocalDate umwandeln und zur Liste hinzufügen
+                for (PeriodeEintrag entry : entries) {
+                    menstruationDays.add(entry.getDatum());
+                }
+
+                Log.d("ZyklusActivity", "Menstruationsdaten geladen: " + menstruationDays.size() + " Einträge");
+
+                // Fruchtbarkeitsberechnungen durchführen (bleibt im Background Thread!)
+                // calculateFertilityData() verwaltet seine eigenen Threads für DB-Operationen
+                calculateFertilityData();
+
+                // NUR Kalender-Update auf UI Thread (OHNE weitere DB-Operationen)
+                runOnUiThread(() -> {
+                    calendarView.notifyCalendarChanged();
+                    Log.d("ZyklusActivity", "Kalender-UI erfolgreich aktualisiert");
+                });
+
+            } catch (Exception e) {
+                Log.e("ZyklusActivity", "Fehler beim Laden der Menstruationsdaten: " + e.getMessage(), e);
+
+                // Fehler-Behandlung auf UI Thread
+                runOnUiThread(() -> {
+                    Toast.makeText(ZyklusActivity.this,
+                            "Fehler beim Laden der Zyklusdaten",
+                            Toast.LENGTH_LONG).show();
+                });
+            }
+        }).start();
     }
-
     /**
      * Berechnet Eisprung, fruchtbare Tage und zukünftige Perioden basierend auf
      * den vorhandenen Menstruationsdaten.
+     *
+     * WICHTIG: Diese Methode führt Datenbankoperationen aus und muss im Background Thread laufen!
+     * Wird automatisch von loadMenstruationDataFromDatabase() im Background aufgerufen.
      *
      * Algorithmus:
      * 1. Bestehende Prognosedaten löschen
@@ -304,67 +329,140 @@ public class ZyklusActivity extends AppCompatActivity
      * 5. Fruchtbare Phase = 5 Tage vor Eisprung
      * 6. Prognose für 3 zukünftige Zyklen
      */
+    /**
+     * Berechnet Eisprung, fruchtbare Phase und zukünftige Perioden basierend auf
+     * den vorhandenen Menstruationsdaten.
+     *
+     * Korrigierte Berechnung:
+     * - Eisprung = 14 Tage vor der NÄCHSTEN prognostizierten Periode
+     * - Fruchtbare Phase = 5 Tage vor bis 2 Tage nach Eisprung (7 Tage total)
+     * - Realistische Zykluslängen (21-35 Tage, Standard 28)
+     */
     private void calculateFertilityData() {
         clearPredictionData();
-
-        // Alte Prognosen aus der Datenbank löschen
-        periodDao.loeschenAllePrognosen();
 
         List<LocalDate> sortedDays = new ArrayList<>(menstruationDays);
         Collections.sort(sortedDays);
 
-        if (sortedDays.size() < 2) return; // Nicht genug Daten für Berechnung
+        if (sortedDays.size() < 2) {
+            runOnUiThread(() -> calendarView.notifyCalendarChanged());
+            return;
+        }
 
-        // Länge des letzten Zyklus ermitteln
-        LocalDate lastPeriod = sortedDays.get(sortedDays.size() - 1);
-        LocalDate previousPeriod = null;
+        // Finde den letzten Periodenstart (nicht einzelnen Tag)
+        LocalDate letzterPeriodenstart = findeLetztenPeriodenstart(sortedDays);
+        LocalDate vorletzterPeriodenstart = findeVorletztenPeriodenstart(sortedDays, letzterPeriodenstart);
 
-        // Suche nach dem vorletzten Periodenstart
-        for (int i = sortedDays.size() - 2; i >= 0; i--) {
-            if (!sortedDays.get(i).isAfter(lastPeriod.minusDays(1))) {
-                previousPeriod = sortedDays.get(i);
-                break;
+        if (vorletzterPeriodenstart == null) {
+            runOnUiThread(() -> calendarView.notifyCalendarChanged());
+            return;
+        }
+        // Korrekte Zykluslänge berechnen
+        int zyklusLaenge = (int) ChronoUnit.DAYS.between(vorletzterPeriodenstart, letzterPeriodenstart);
+
+// Validierung und Normalisierung
+        if (zyklusLaenge < 21 || zyklusLaenge > 35) {
+            zyklusLaenge = 28; // Medizinischer Standard
+            Log.w(TAG, "Unrealistische Zykluslänge erkannt (" + zyklusLaenge +
+                    " Tage), verwende Standard: 28 Tage");
+        }
+
+        //  PROGNOSE für die nächsten 3 Zyklen
+        for (int zyklus = 1; zyklus <= 3; zyklus++) {
+            // Nächster Periodenstart
+            LocalDate naechsterPeriodenstart = letzterPeriodenstart.plusDays(zyklus * zyklusLaenge);
+
+            //Eisprung = 14 Tage NACH dem Start jedes Zyklus
+            LocalDate zyklusStart = letzterPeriodenstart.plusDays((zyklus - 1) * zyklusLaenge);
+            LocalDate eisprung = zyklusStart.plusDays(13);
+
+            // Füge Eisprung hinzu
+            ovulationDays.add(eisprung);
+
+            //Fruchtbare Phase = 5 Tage vor bis 2 Tage nach Eisprung
+            for (int tag = -5; tag <= 2; tag++) {
+                LocalDate fruchtbarerTag = eisprung.plusDays(tag);
+                fertileDays.add(fruchtbarerTag);
+            }
+
+            // Prognostizierte Menstruation (5-6 Tage)
+            for (int tag = 0; tag < 6; tag++) {
+                LocalDate menstruationsTag = naechsterPeriodenstart.plusDays(tag);
+                predictedMenstruation.add(menstruationsTag);
             }
         }
 
-        if (previousPeriod == null) return;
+// UI aktualisieren
+        runOnUiThread(() -> {
+            calendarView.notifyCalendarChanged();
+            Log.d(TAG, "Fertilitätsdaten korrekt berechnet: " + ovulationDays.size() + " Eisprünge, " + fertileDays.size() + " fruchtbare Tage");
+        });
+    }
 
-        // Zykluslänge berechnen
-        long cycleLength = ChronoUnit.DAYS.between(previousPeriod, lastPeriod);
-        if (cycleLength < 20 || cycleLength > 40) {
-            cycleLength = 28; // Standardwert für unrealistische Zykluslängen
-        }
+    /**
+     * Findet den letzten Periodenstart (ersten Tag einer zusammenhängenden Periode)
+     */
+    private LocalDate findeLetztenPeriodenstart(List<LocalDate> sortierteTage) {
+        if (sortierteTage.isEmpty()) return null;
 
-        // Liste für Prognose-Einträge in der Datenbank
-        List<PeriodeEintrag> predictionEntries = new ArrayList<>();
+        // Gruppiere zusammenhängende Tage zu Perioden
+        List<List<LocalDate>> perioden = gruppiereZuPerioden(sortierteTage);
 
-        // Prognose für die nächsten 3 Zyklen erstellen
-        for (int i = 1; i <= 3; i++) {
-            LocalDate predictedStart = lastPeriod.plusDays(i * cycleLength);
-            LocalDate ovulation = predictedStart.minusDays(14);
+        if (perioden.isEmpty()) return null;
 
-            // Eisprung hinzufügen
-            ovulationDays.add(ovulation);
+        // Letzter Periodenstart = erster Tag der letzten Periode
+        List<LocalDate> letzteperiode = perioden.get(perioden.size() - 1);
+        Collections.sort(letzteperiode);
+        return letzteperiode.get(0);
+    }
 
-            // Fruchtbare Phase (5 Tage vor Eisprung)
-            for (int j = -5; j <= 0; j++) {
-                fertileDays.add(ovulation.plusDays(j));
+    /**
+     * Findet den vorletzten Periodenstart für Zykluslängen-Berechnung
+     */
+    private LocalDate findeVorletztenPeriodenstart(List<LocalDate> sortierteTage, LocalDate letzterStart) {
+        List<List<LocalDate>> perioden = gruppiereZuPerioden(sortierteTage);
+
+        if (perioden.size() < 2) return null;
+
+        // Vorletzte Periode
+        List<LocalDate> vorletzteperiode = perioden.get(perioden.size() - 2);
+        Collections.sort(vorletzteperiode);
+        return vorletzteperiode.get(0);
+    }
+
+    /**
+     * Gruppiert einzelne Menstruationstage zu zusammenhängenden Perioden
+     */
+    private List<List<LocalDate>> gruppiereZuPerioden(List<LocalDate> alleTage) {
+        List<List<LocalDate>> perioden = new ArrayList<>();
+        List<LocalDate> aktuelleperiode = new ArrayList<>();
+
+        for (int i = 0; i < alleTage.size(); i++) {
+            LocalDate aktuellerTag = alleTage.get(i);
+
+            if (aktuelleperiode.isEmpty()) {
+                // Erste Periode beginnen
+                aktuelleperiode.add(aktuellerTag);
+            } else {
+                LocalDate letzterTag = Collections.max(aktuelleperiode);
+
+                // Wenn mehr als 2 Tage Abstand, neue Periode beginnen
+                if (ChronoUnit.DAYS.between(letzterTag, aktuellerTag) > 2) {
+                    perioden.add(new ArrayList<>(aktuelleperiode));
+                    aktuelleperiode.clear();
+                    aktuelleperiode.add(aktuellerTag);
+                } else {
+                    aktuelleperiode.add(aktuellerTag);
+                }
             }
-
-            // Prognostizierte Menstruation (5 Tage)
-            for (int d = 0; d < 5; d++) {
-                LocalDate predictionDay = predictedStart.plusDays(d);
-                predictedMenstruation.add(predictionDay);
-
-                // Zur Datenbank-Speicherung hinzufügen
-                predictionEntries.add(new PeriodeEintrag(predictionDay, true));
-            }
         }
 
-        // Prognosen in der Datenbank speichern
-        if (!predictionEntries.isEmpty()) {
-            periodDao.einfuegenMehrerePerioden(predictionEntries);
+        // Letzte Periode hinzufügen
+        if (!aktuelleperiode.isEmpty()) {
+            perioden.add(aktuelleperiode);
         }
+
+        return perioden;
     }
 
     /**
@@ -412,6 +510,7 @@ public class ZyklusActivity extends AppCompatActivity
 
             @Override
             public void bind(DayViewContainer container, CalendarDay day) {
+                LocalDate heute = LocalDate.now(); // Heutiges Datum
                 LocalDate date = day.getDate();
                 container.textView.setText(String.valueOf(date.getDayOfMonth()));
                 container.dotView.setVisibility(View.GONE); // Standardmäßig versteckt
@@ -441,17 +540,37 @@ public class ZyklusActivity extends AppCompatActivity
                 }
 
                 // Hervorhebung des ausgewählten Tages
+                // Hervorhebung: Priorität - ausgewählt > heute > normal
                 if (date.equals(selectedDate)) {
+                    // Ausgewählter Tag hat höchste Priorität
                     container.textView.setBackgroundResource(R.drawable.selected_day_background);
                     container.textView.setTextColor(Color.WHITE);
+                } else if (date.equals(heute)) {
+                    // Heutiger Tag wird hervorgehoben
+                    container.textView.setBackgroundResource(R.drawable.bg_today);
+                    container.textView.setTextColor(Color.BLACK);
                 } else {
+                    // Normaler Tag
                     container.textView.setBackground(null);
+                    // Textfarbe für Tage des aktuellen Monats wiederherstellen
+                    if (day.getOwner() == DayOwner.THIS_MONTH) {
+                        container.textView.setTextColor(Color.BLACK);
+                    }
                 }
 
                 // Click-Handler für Tagesauswahl
                 container.textView.setOnClickListener(v -> {
-                    selectedDate = date;
+                    // Toggle-Logik: bei erneutem Klick auf denselben Tag → Auswahl zurücksetzen
+                    if (date.equals(selectedDate)) {
+                        selectedDate = null; // Auswahl zurücksetzen
+                    } else {
+                        selectedDate = date; // Neuen Tag auswählen
+                    }
+
                     calendarView.notifyCalendarChanged();
+
+                    // Info-Karte aktualisieren
+                    ladeAktuelleZyklusphase();
                 });
             }
         });
@@ -489,6 +608,90 @@ public class ZyklusActivity extends AppCompatActivity
             updateMonthTitle(currentMonth);
         });
     }
+
+    /**
+     * Konfiguriert die Click-Handler für die Sensor-Bereiche im Tagesbericht.
+     * Öffnet jeweils die entsprechende SensorDetailActivity mit dem spezifischen Sensor-Typ.
+     */
+    private void setupSensorClickHandlers() {
+        Log.d(TAG, "Konfiguriere Sensor Click-Handler...");
+
+        // Temperatur-Bereich Click-Handler
+        LinearLayout temperatureLayout = findViewById(R.id.layout_temperature_sensor);
+        if (temperatureLayout != null) {
+            temperatureLayout.setOnClickListener(v -> {
+                Log.d(TAG, "Temperatur-Bereich geklickt");
+                openSensorDetailDialog(SensorDetailActivity.SENSOR_TEMPERATUR);
+            });
+
+            // Visuelles Feedback für Klickbarkeit
+            temperatureLayout.setBackground(ContextCompat.getDrawable(this,
+                    R.drawable.sensor_clickable_background));
+            temperatureLayout.setClickable(true);
+            temperatureLayout.setFocusable(true);
+        }
+
+        // Puls-Bereich Click-Handler
+        LinearLayout pulseLayout = findViewById(R.id.layout_pulse_sensor);
+        if (pulseLayout != null) {
+            pulseLayout.setOnClickListener(v -> {
+                Log.d(TAG, "Puls-Bereich geklickt");
+                openSensorDetailDialog(SensorDetailActivity.SENSOR_PULS);
+            });
+
+            // Visuelles Feedback für Klickbarkeit
+            pulseLayout.setBackground(ContextCompat.getDrawable(this,
+                    R.drawable.sensor_clickable_background));
+            pulseLayout.setClickable(true);
+            pulseLayout.setFocusable(true);
+        }
+
+        // SpO₂-Bereich Click-Handler
+        LinearLayout spo2Layout = findViewById(R.id.layout_spo2_sensor);
+        if (spo2Layout != null) {
+            spo2Layout.setOnClickListener(v -> {
+                Log.d(TAG, "SpO₂-Bereich geklickt");
+                openSensorDetailDialog(SensorDetailActivity.SENSOR_SPO2);
+            });
+
+            // Visuelles Feedback für Klickbarkeit
+            spo2Layout.setBackground(ContextCompat.getDrawable(this,
+                    R.drawable.sensor_clickable_background));
+            spo2Layout.setClickable(true);
+            spo2Layout.setFocusable(true);
+        }
+
+        Log.d(TAG, "Sensor Click-Handler erfolgreich konfiguriert");
+    }
+
+    /**
+     * Öffnet die SensorDetailActivity für den angegebenen Sensor-Typ
+     *
+     * @param sensorType Der Typ des Sensors (SENSOR_TEMPERATUR, SENSOR_PULS, SENSOR_SPO2)
+     */
+    private void openSensorDetailDialog(String sensorType) {
+        try {
+            Log.d(TAG, "Öffne Sensor-Detail-Dialog für: " + sensorType);
+
+            Intent intent = new Intent(this, SensorDetailActivity.class);
+            intent.putExtra(SensorDetailActivity.EXTRA_SENSOR_TYP, sensorType);
+
+            // Mit Animation starten für bessere UX
+            startActivity(intent);
+
+            // Schöne Übergangsanimation
+            overridePendingTransition(R.anim.slide_in_up, R.anim.fade_out);
+
+            Log.d(TAG, "Sensor-Detail-Dialog erfolgreich gestartet");
+
+        } catch (Exception e) {
+            Log.e(TAG, "Fehler beim Öffnen des Sensor-Detail-Dialogs: " + e.getMessage(), e);
+            Toast.makeText(this, "Fehler beim Öffnen der Sensor-Statistiken",
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
 
     /**
      * Konfiguriert den Floating Action Button für die Periodeneingabe.
@@ -583,16 +786,51 @@ public class ZyklusActivity extends AppCompatActivity
      *
      * @param newDays Liste der neuen Menstruationstage
      */
+    /**
+     * Speichert neue Menstruationstage in der Room-Datenbank.
+     * VERBESSERT: Läuft jetzt im Background Thread
+     *
+     * @param newDays Liste der neuen Menstruationstage
+     */
     private void saveMenstruationDaysToDatabase(List<LocalDate> newDays) {
-        // PeriodeEintrag-Objekte für neue Daten erstellen
-        List<PeriodeEintrag> newEntries = new ArrayList<>();
-        for (LocalDate date : newDays) {
-            PeriodeEintrag entry = new PeriodeEintrag(date, false); // false = echte Menstruation
-            newEntries.add(entry);
+        if (newDays.isEmpty()) {
+            Log.d("ZyklusActivity", "Keine neuen Menstruationstage zum Speichern");
+            return;
         }
 
-        // In der Datenbank speichern
-        periodDao.einfuegenMehrerePerioden(newEntries);
+        Log.d("ZyklusActivity", "Speichere " + newDays.size() + " neue Menstruationstage...");
+
+        // Background-Thread für Datenbankoperationen
+        new Thread(() -> {
+            try {
+                // PeriodeEintrag-Objekte für neue Daten erstellen
+                List<PeriodeEintrag> newEntries = new ArrayList<>();
+                for (LocalDate date : newDays) {
+                    PeriodeEintrag entry = new PeriodeEintrag(date, false); // false = echte Menstruation
+                    newEntries.add(entry);
+                }
+
+                // In der Datenbank speichern
+                periodDao.einfuegenMehrerePerioden(newEntries);
+
+                Log.i("ZyklusActivity", "Menstruationstage erfolgreich gespeichert");
+
+                // UI über Erfolg benachrichtigen
+                runOnUiThread(() -> {
+                    Toast.makeText(ZyklusActivity.this,
+                            newDays.size() + " Periodentage hinzugefügt",
+                            Toast.LENGTH_SHORT).show();
+                });
+
+            } catch (Exception e) {
+                Log.e("ZyklusActivity", "Fehler beim Speichern der Menstruationstage", e);
+                runOnUiThread(() -> {
+                    Toast.makeText(ZyklusActivity.this,
+                            "Fehler beim Speichern: " + e.getMessage(),
+                            Toast.LENGTH_LONG).show();
+                });
+            }
+        }).start();
     }
 
     /**
@@ -623,17 +861,51 @@ public class ZyklusActivity extends AppCompatActivity
             deleteIcon.setImageResource(android.R.drawable.ic_menu_delete);
             deleteIcon.setPadding(16, 0, 0, 0);
             deleteIcon.setOnClickListener(v -> {
-                // Aus lokaler Liste entfernen
+                Log.d("ZyklusActivity", "Lösche Menstruationsdatum: " + date);
+
+                // Sofort aus lokaler Liste entfernen (UI-responsiv)
                 menstruationDays.remove(date);
 
-                // Aus Datenbank löschen
-                periodDao.loeschenPeriodeNachDatum(date);
+                // Background Thread für Datenbankoperation
+                new Thread(() -> {
+                    try {
+                        // Aus Datenbank löschen (Background Thread!)
+                        periodDao.loeschenPeriodeNachDatum(date);
 
-                // Kalender aktualisieren
-                calendarView.notifyCalendarChanged();
+                        Log.d("ZyklusActivity", "Datum erfolgreich aus DB gelöscht: " + date);
 
-                // Dialog-Liste aktualisieren
-                refreshOldDates(layout, dialog);
+                        // UI-Updates auf Main Thread
+                        runOnUiThread(() -> {
+                            // Kalender aktualisieren
+                            calendarView.notifyCalendarChanged();
+
+                            // Dialog-Liste aktualisieren
+                            refreshOldDates(layout, dialog);
+
+                            // Benutzer-Feedback
+                            Toast.makeText(ZyklusActivity.this,
+                                    "Datum gelöscht: " + date,
+                                    Toast.LENGTH_SHORT).show();
+                        });
+
+                    } catch (Exception e) {
+                        Log.e("ZyklusActivity", "Fehler beim Löschen des Datums: " + e.getMessage(), e);
+
+                        // Fehler-Behandlung
+                        runOnUiThread(() -> {
+                            // Datum wieder zur lokalen Liste hinzufügen bei Fehler
+                            menstruationDays.add(date);
+
+                            // Benutzer über Fehler informieren
+                            Toast.makeText(ZyklusActivity.this,
+                                    "Fehler beim Löschen: " + e.getMessage(),
+                                    Toast.LENGTH_LONG).show();
+
+                            // Dialog aktualisieren
+                            refreshOldDates(layout, dialog);
+                        });
+                    }
+                }).start();
             });
             row.addView(deleteIcon);
 
@@ -671,6 +943,7 @@ public class ZyklusActivity extends AppCompatActivity
                 sensorManager.starteMessung();
             }
         }
+        ladeSensordatenFuerAnzeige();
     }
 
     /**
@@ -682,9 +955,9 @@ public class ZyklusActivity extends AppCompatActivity
         super.onPause();
 
         // Sensoren pausieren um Akku zu schonen
-       // if (sensorManager != null) {
+        // if (sensorManager != null) {
         //    sensorManager.stoppeMessung();
-       // }
+        // }
     }
 
     /**
@@ -702,54 +975,48 @@ public class ZyklusActivity extends AppCompatActivity
     }
 
     /**
-     * Реализация HealthConnectPermissionRequester интерфейса
-     * Вызывается ZyklusSensorManager для запроса разрешений Health Connect
+     * Implementierung des HealthConnectPermissionRequester-Interfaces
+     * Wird vom ZyklusSensorManager aufgerufen um Health Connect Berechtigungen anzufordern
      */
-    // ===== РЕАЛИЗАЦИЯ HEALTHCONNECTPERMISSIONREQUESTER ИНТЕРФЕЙСА =====
+    // ===== IMPLEMENTIERUNG DES HEALTHCONNECTPERMISSIONREQUESTER INTERFACES =====
+
 
     @Override
     public void requestHealthConnectPermissions(Set<String> permissions) {
-        // Health Connect использует свою систему разрешений
         try {
             Intent intent = new Intent("androidx.health.ACTION_REQUEST_PERMISSIONS");
             startActivity(intent);
-            Toast.makeText(this, "Откройте Health Connect для предоставления разрешений",
+            Toast.makeText(this, "Öffnen Sie Health Connect für die Berechtigungen\"",
                     Toast.LENGTH_LONG).show();
         } catch (Exception e) {
-            Toast.makeText(this, "Health Connect не найден. Установите приложение Health Connect",
+            Toast.makeText(this, "Health Connect nicht gefunden. Bitte installieren Sie Health Connect",
                     Toast.LENGTH_LONG).show();
         }
     }
 
-    // В ZyklusActivity.java добавьте эти методы в конец класса (перед DayViewContainer):
 
-// ===== РЕАЛИЗАЦИЯ SENSORCALLBACK ИНТЕРФЕЙСА =====
+// ===== IMPLEMENTIERUNG DES SENSORCALLBACK INTERFACES =====
 
-    // Пример того, как это должно выглядеть в ZyklusActivity.java
+    /**
+     * Implementierung der SensorCallback-Methoden für Health Connect Integration
+     */
     @Override
     public void datenVerfuegbar(SensorData daten) {
-        runOnUiThread(() -> { // Гарантируем UI-поток, хотя должно быть уже так
+        runOnUiThread(() -> {
             if (daten != null) {
-                Log.w("ZyklusActivity", "Daten verfügbar: " + daten.toString()); // Логирование
-                if (daten.getBodyTemperature() > 0) {
-                    temperatureValueText.setText(String.format("Temperatur: %.1f°C", daten.getBodyTemperature()));
-                } else {
-                    temperatureValueText.setText("Temperatur: N/A");
-                }
-                if (daten.getHeartRate() > 0) {
-                    pulseValueText.setText(String.format("Puls: %.0f bpm", daten.getHeartRate()));
-                } else {
-                    pulseValueText.setText("Puls: N/A");
-                }
-                if (daten.getOxygenSaturation() > 0) {
-                    spo2ValueText.setText(String.format("SpO₂: %.0f%%", daten.getOxygenSaturation()));
-                } else {
-                    spo2ValueText.setText("SpO₂: N/A");
-                }
-                Toast.makeText(ZyklusActivity.this, "Sensor-Daten aktualisiert!", Toast.LENGTH_SHORT).show(); // Тестовый тост
-            } else {
-                Log.w ("ZyklusActivity", "Daten verfügbar, aber daten объект is null");
-                Toast.makeText(ZyklusActivity.this, "Sensor-Daten (null) erhalten", Toast.LENGTH_SHORT).show();
+                Log.i("ZyklusActivity", "Neue Sensordaten empfangen: " + daten.toString());
+
+                // Sofortige Anzeige der neuen Daten
+                updateSensorUI(daten);
+
+                // Nach kurzer Verzögerung auch gespeicherte Daten neu laden
+                // (um sicherzustellen, dass Anzeige mit DB synchron ist)
+                new android.os.Handler().postDelayed(() -> {
+                    ladeSensordatenFuerAnzeige();
+                }, 2000); // 2 Sekunden Verzögerung
+
+                Toast.makeText(this, "Sensordaten aktualisiert und gespeichert!",
+                        Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -757,9 +1024,7 @@ public class ZyklusActivity extends AppCompatActivity
     @Override
     public void keineDatenVerfuegbar(String grund) {
         runOnUiThread(() -> {
-            // Заменяем androidx.media3.common.util.Log на android.util.Log
             Log.w("ZyklusActivity", "Keine Daten verfügbar: " + grund);
-            // Возможно, обновить UI, чтобы показать "N/A" для всех полей
             temperatureValueText.setText("Temperatur: N/A");
             pulseValueText.setText("Puls: N/A");
             spo2ValueText.setText("SpO₂: N/A");
@@ -771,11 +1036,52 @@ public class ZyklusActivity extends AppCompatActivity
     @Override
     public void sensorFehler(String fehlermeldung) {
         runOnUiThread(() -> {
-            // Заменяем androidx.media3.common.util.Log на android.util.Log
             Log.e("ZyklusActivity", "Sensor Fehler: " + fehlermeldung);
             Toast.makeText(ZyklusActivity.this, "Sensorfehler: " + fehlermeldung, Toast.LENGTH_LONG).show();
         });
     }
+
+    /**
+     * Aktualisiert die Sensor-UI mit aktuellen Live-Daten (ohne Datenbankzugriff)
+     * Wird aufgerufen wenn neue Daten direkt von Health Connect kommen
+     */
+    private void updateSensorUI(SensorData daten) {
+        Log.d("ZyklusActivity", "Aktualisiere UI mit Live-Sensordaten: " + daten.toString());
+
+        // Temperatur anzeigen
+        if (daten.getBodyTemperature() > 0) {
+            String tempText = String.format("Temperatur: %.1f°C", daten.getBodyTemperature());
+            temperatureValueText.setText(tempText);
+            temperatureValueText.setTextColor(getColor(R.color.text_primary));
+            Log.d("ZyklusActivity", "Live-Temperatur angezeigt: " + tempText);
+        } else {
+            temperatureValueText.setText("Temperatur: N/A");
+            temperatureValueText.setTextColor(getColor(R.color.text_disabled));
+        }
+
+        // Pulsfrequenz anzeigen
+        if (daten.getHeartRate() > 0) {
+            String pulsText = String.format("Puls: %.0f bpm", daten.getHeartRate());
+            pulseValueText.setText(pulsText);
+            pulseValueText.setTextColor(getColor(R.color.text_primary));
+            Log.d("ZyklusActivity", "Live-Puls angezeigt: " + pulsText);
+        } else {
+            pulseValueText.setText("Puls: N/A");
+            pulseValueText.setTextColor(getColor(R.color.text_disabled));
+        }
+
+        // Sauerstoffsättigung anzeigen
+        if (daten.getOxygenSaturation() > 0) {
+            String spo2Text = String.format("SpO₂: %.0f%%", daten.getOxygenSaturation());
+            spo2ValueText.setText(spo2Text);
+            spo2ValueText.setTextColor(getColor(R.color.text_primary));
+            Log.d("ZyklusActivity", "Live-SpO₂ angezeigt: " + spo2Text);
+        } else {
+            spo2ValueText.setText("SpO₂: N/A");
+            spo2ValueText.setTextColor(getColor(R.color.text_disabled));
+        }
+    }
+
     /**
      * ViewContainer-Klasse für die Darstellung einzelner Kalendertage.
      * Enthält Referenzen auf TextView (Tagesnummer) und View (Markierungspunkt).
@@ -791,7 +1097,260 @@ public class ZyklusActivity extends AppCompatActivity
     }
 
     /**
-     * Konfiguriert den Permission-Launcher für Sensor-Berechtigungen
+     * Lädt und zeigt die aktuellsten Sensordaten an
      */
+    private void ladeSensordatenFuerAnzeige() {
+        // Background-Thread für Datenbankzugriff
+        new Thread(() -> {
+            try {
+                WohlbefindenDao dao = database.wohlbefindenDao();
+                WohlbefindenEintrag letzteWerte = dao.getLetztenSensordaten();
 
+                // Zurück zum UI-Thread für Anzeige-Updates
+                runOnUiThread(() -> {
+                    if (letzteWerte != null) {
+                        aktualisiereSensordatenAnzeige(letzteWerte);
+                    } else {
+                        zeigePlatzhalterFuerSensordaten();
+                    }
+                });
+
+            } catch (Exception e) {
+                Log.e("ZyklusActivity", "Fehler beim Laden der Sensordaten", e);
+                runOnUiThread(() -> zeigeSensordatenFehler());
+            }
+        }).start();
+    }
+
+    /**
+     * Aktualisiert die UI mit den geladenen Sensordaten
+     */
+    private void aktualisiereSensordatenAnzeige(WohlbefindenEintrag eintrag) {
+        Log.d("ZyklusActivity", "Aktualisiere Sensordaten-Anzeige für: " + eintrag.getDatum());
+
+        // Temperatur anzeigen
+        if (eintrag.getTemperatur() != null) {
+            String tempText = String.format("Temperatur: %.1f°C", eintrag.getTemperatur());
+            temperatureValueText.setText(tempText);
+            temperatureValueText.setTextColor(getColor(R.color.text_primary));
+            Log.d("ZyklusActivity", "Temperatur angezeigt: " + tempText);
+        } else {
+            temperatureValueText.setText("Temperatur: Keine Daten");
+            temperatureValueText.setTextColor(getColor(R.color.text_disabled));
+        }
+
+        // Pulsfrequenz anzeigen
+        if (eintrag.getPuls() != null) {
+            String pulsText = String.format("Puls: %d bpm", eintrag.getPuls());
+            pulseValueText.setText(pulsText);
+            pulseValueText.setTextColor(getColor(R.color.text_primary));
+            Log.d("ZyklusActivity", "Puls angezeigt: " + pulsText);
+        } else {
+            pulseValueText.setText("Puls: Keine Daten");
+            pulseValueText.setTextColor(getColor(R.color.text_disabled));
+        }
+
+        // Sauerstoffsättigung anzeigen
+        if (eintrag.getSpo2() != null) {
+            String spo2Text = String.format("SpO₂: %d%%", eintrag.getSpo2());
+            spo2ValueText.setText(spo2Text);
+            spo2ValueText.setTextColor(getColor(R.color.text_primary));
+            Log.d("ZyklusActivity", "SpO₂ angezeigt: " + spo2Text);
+        } else {
+            spo2ValueText.setText("SpO₂: Keine Daten");
+            spo2ValueText.setTextColor(getColor(R.color.text_disabled));
+        }
+
+        // Zeitstempel der letzten Messung anzeigen
+        String zeitstempel = "Letzte Messung: " + eintrag.getDatum().toString();
+        // Sie können ein zusätzliches TextView für den Zeitstempel hinzufügen
+        Log.i("ZyklusActivity", zeitstempel);
+    }
+
+    /**
+     * Zeigt Platzhalter wenn keine Sensordaten vorhanden
+     */
+    private void zeigePlatzhalterFuerSensordaten() {
+        temperatureValueText.setText("Temperatur: Noch keine Messung");
+        temperatureValueText.setTextColor(getColor(R.color.text_disabled));
+
+        pulseValueText.setText("Puls: Noch keine Messung");
+        pulseValueText.setTextColor(getColor(R.color.text_disabled));
+
+        spo2ValueText.setText("SpO₂: Noch keine Messung");
+        spo2ValueText.setTextColor(getColor(R.color.text_disabled));
+
+        Log.i("ZyklusActivity", "Keine Sensordaten in der Datenbank gefunden");
+    }
+
+    /**
+     * Zeigt Fehlermeldung bei Problemen mit Sensordaten
+     */
+    private void zeigeSensordatenFehler() {
+        temperatureValueText.setText("Temperatur: Fehler beim Laden");
+        temperatureValueText.setTextColor(getColor(R.color.error_red));
+
+        pulseValueText.setText("Puls: Fehler beim Laden");
+        pulseValueText.setTextColor(getColor(R.color.error_red));
+
+        spo2ValueText.setText("SpO₂: Fehler beim Laden");
+        spo2ValueText.setTextColor(getColor(R.color.error_red));
+
+        Log.e("ZyklusActivity", "Fehler beim Anzeigen der Sensordaten");
+    }
+    /**
+     * Lädt und zeigt die aktuelle Zyklusphase an
+     */
+    private void ladeAktuelleZyklusphase() {
+        Log.d(TAG, "Lade aktuelle Zyklusphase...");
+
+        // Prüfe ob UI-Komponenten verfügbar sind
+        if (aktuellePhaseText == null || zyklusTagText == null) {
+            Log.w(TAG, "UI-Komponenten für Zyklusphase nicht verfügbar");
+            return;
+        }
+
+        // Wenn ein Tag ausgewählt ist → zeige den, sonst zeige heute
+        LocalDate zielDatum = (selectedDate != null) ? selectedDate : LocalDate.now();
+
+        statistikManager.analysiereZyklusphaseFürDatum(zielDatum,
+                new StatistikManager.ZyklusPhasenCallback() {
+                    @Override
+                    public void onZyklusPhasenAnalyseBerechnet(AnalyseErgebnis analyseErgebnis) {
+                        runOnUiThread(() -> {
+                            aktualisiereZyklusphaseUI(analyseErgebnis);
+                        });
+                    }
+
+                    @Override
+                    public void onZyklusFehler(String fehlermeldung) {
+                        runOnUiThread(() -> {
+                            Log.e(TAG, "Zyklusphasen-Fehler: " + fehlermeldung);
+                            zeigeZyklusphasenFehler(fehlermeldung);
+                        });
+                    }
+                });
+    }
+
+    /**
+     * Aktualisiert die UI mit Zyklusphasen-Informationen
+     */
+    private void aktualisiereZyklusphaseUI(AnalyseErgebnis ergebnis) {
+        Log.d(TAG, "Aktualisiere Zyklusphase UI: " + ergebnis.getAktuellePhase());
+
+        // Phase und Tag anzeigen
+        String phaseText = ergebnis.getPhasenIcon() + " " + ergebnis.getAktuellePhase().getDisplayName();
+        aktuellePhaseText.setText(phaseText);
+
+        String tagText = "Tag " + ergebnis.getZyklusTag();
+        zyklusTagText.setText(tagText);
+
+        // Farbe basierend auf Phase setzen
+        int phasenFarbe = getPhasenFarbe(ergebnis.getAktuellePhase());
+        aktuellePhaseText.setTextColor(phasenFarbe);
+    }
+
+    /**
+     * Gibt Farbe für Zyklusphase zurück
+     */
+    private int getPhasenFarbe(ZyklusPhaseBerechnung.ZyklusPhase phase) {
+        switch (phase) {
+            case MENSTRUATION:
+                return getColor(R.color.fuchsia);          // Rosa für Menstruation
+            case FOLLIKELPHASE:
+                return getColor(android.R.color.holo_green_dark);   // Grün für Follikelphase
+            case OVULATION:
+                return getColor(android.R.color.holo_purple);       // Lila für Eisprung
+            case LUTEALPHASE:
+                return getColor(android.R.color.holo_orange_dark);  // Orange für Lutealphase
+            default:
+                return getColor(android.R.color.darker_gray);       // Grau für unbekannt
+        }
+    }
+
+    /**
+     * Zeigt Fehler bei Zyklusphasen-Analyse
+     */
+    private void zeigeZyklusphasenFehler(String fehlermeldung) {
+        if (aktuellePhaseText != null) {
+            aktuellePhaseText.setText("❓ Phase unbekannt");
+            aktuellePhaseText.setTextColor(getColor(android.R.color.darker_gray));
+        }
+        if (zyklusTagText != null) {
+            zyklusTagText.setText("Mehr Daten sammeln");
+        }
+
+        Toast.makeText(this, "Zyklusphase: " + fehlermeldung, Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * Analysiert Sensor-Daten im Zykluskontext (wird aufgerufen wenn neue Sensor-Daten verfügbar)
+     */
+    private void analysiereSensorDatenMitZyklus(float temperatur, int puls, int spo2) {
+        Log.d(TAG, "Analysiere Sensor-Daten mit Zyklusphase...");
+
+        statistikManager.analysiereAktuelleZyklusphaseUndSensoren(temperatur, puls, spo2,
+                new StatistikManager.ZyklusPhasenCallback() {
+                    @Override
+                    public void onZyklusPhasenAnalyseBerechnet(AnalyseErgebnis analyseErgebnis) {
+                        runOnUiThread(() -> {
+                            // UI mit detaillierter Analyse aktualisieren
+                            aktualisiereZyklusphaseUI(analyseErgebnis);
+                            zeigeSensorBewertung(analyseErgebnis);
+                        });
+                    }
+
+                    @Override
+                    public void onZyklusFehler(String fehlermeldung) {
+                        runOnUiThread(() -> {
+                            Log.w(TAG, "Sensor-Zyklus-Analyse Fehler: " + fehlermeldung);
+                        });
+                    }
+                });
+    }
+
+    /**
+     * Zeigt Bewertung der Sensor-Werte im Zykluskontext
+     */
+    private void zeigeSensorBewertung(AnalyseErgebnis ergebnis) {
+        // Wenn Empfehlungen vorhanden, als Toast anzeigen
+        if (!ergebnis.getEmpfehlung().isEmpty()) {
+            String bewertung = ergebnis.getBewertungsfarbe().equals("#4CAF50")
+                    ? "✅ Werte normal für " + ergebnis.getAktuellePhase().getDisplayName()
+                    : "⚠️ " + ergebnis.getEmpfehlung();
+
+            Toast.makeText(this, bewertung, Toast.LENGTH_LONG).show();
+        }
+    }
+    /**
+     * Berechnet die durchschnittliche Periodenlänge aus echten Daten
+     */
+    private int berechneDurchschnittlichePeriodenlänge(List<LocalDate> sortedDays) {
+        if (sortedDays.size() < 4) return 4; // Mindestens 4 Tage als Fallback
+
+        // Finde zusammenhängende Periodengruppen
+        List<Integer> periodenlängen = new ArrayList<>();
+        int aktuelleLength = 1;
+
+        for (int i = 1; i < sortedDays.size(); i++) {
+            long tageZwischen = ChronoUnit.DAYS.between(sortedDays.get(i-1), sortedDays.get(i));
+
+            if (tageZwischen == 1) {
+                // Aufeinanderfolgender Tag
+                aktuelleLength++;
+            } else {
+                // Lücke gefunden - Periode beendet
+                periodenlängen.add(aktuelleLength);
+                aktuelleLength = 1;
+            }
+        }
+        // Letzte Periode hinzufügen
+        periodenlängen.add(aktuelleLength);
+
+        // Durchschnitt berechnen
+        if (periodenlängen.isEmpty()) return 4;
+
+        double durchschnitt = periodenlängen.stream().mapToInt(Integer::intValue).average().orElse(4.0);
+        return Math.max(3, Math.min(7, (int) Math.round(durchschnitt))); // Zwischen 3-7 Tagen
+    }
 }

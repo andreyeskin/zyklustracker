@@ -24,8 +24,8 @@
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
+        android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.ZyklusTracker"
         tools:targetApi="31">
@@ -46,11 +46,12 @@
 
         <activity android:name=".WohlbefindenActivity" />
         <activity android:name=".StatistikActivity" />
+        <activity android:name=".SensorDetailActivity" />
 
         <!-- ===== HEALTH CONNECT PERMISSIONS RATIONALE ACTIVITY ===== -->
         <!-- Für Android 13 und niedriger -->
         <activity
-            android:name=".PermissionsRationaleActivity"
+            android:name=".sensors.PermissionsRationaleActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="androidx.health.ACTION_SHOW_PERMISSIONS_RATIONALE" />
@@ -61,7 +62,7 @@
         <activity-alias
             android:name="ViewPermissionUsageActivity"
             android:exported="true"
-            android:targetActivity=".PermissionsRationaleActivity"
+            android:targetActivity=".sensors.PermissionsRationaleActivity"
             android:permission="android.permission.START_VIEW_PERMISSION_USAGE">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW_PERMISSION_USAGE" />
